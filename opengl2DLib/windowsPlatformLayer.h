@@ -9,7 +9,7 @@ namespace platform
 	};
 
 	HWND createWindow(int w, int h, const char * title);
-	void handleInput(HWND wind);
+	void handleEvents(HWND wind);
 	void enableOpengl(HWND wind, HDC * hdc, HGLRC * hrc);
 	bool shouldClose();
 };

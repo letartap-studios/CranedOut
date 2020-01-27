@@ -61,7 +61,7 @@ namespace platform
 		return wind;
 	}
 
-	void handleInput(HWND wind)
+	void handleEvents(HWND wind)
 	{
 		MSG msg = {};
 		while (PeekMessage(&msg, wind, 0, 0, PM_REMOVE))

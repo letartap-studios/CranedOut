@@ -1,5 +1,4 @@
 #include <gl/glew.h>
-#include <glfw/glfw3.h>
 
 #include <iostream>
 #include <fstream>
@@ -10,7 +9,6 @@
 
 int main() 
 {
-	glfwInit();
 	
 	auto wind = platform::createWindow(620, 420, "window");
 	HDC hdc;
@@ -31,12 +29,12 @@ int main()
 
 	while (!platform::shouldClose())
 	{
+		platform::handleEvents(wind);
+
 		int w = 620; int h = 420;
 		//glfwGetWindowSize(wind, &w, &h);
 		renderer.updateWindowMetrics(w, h);
 		renderer.clearScreen();
-
-		glfwPollEvents();
 
 		gl2d::enableNecessaryGLFeatures();
 		renderer.resetCameraAndShader();
