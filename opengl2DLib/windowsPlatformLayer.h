@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include "glm/vec2.hpp"
 
 namespace platform
 {
@@ -8,8 +9,22 @@ namespace platform
 		LRESULT CALLBACK windProc(HWND wind, UINT msg, WPARAM wp, LPARAM lp);
 	};
 
-	HWND createWindow(int w, int h, const char * title);
-	void handleEvents(HWND wind);
-	void enableOpengl(HWND wind, HDC * hdc, HGLRC * hrc);
+	struct Window
+	{
+		HWND handle = 0;
+		HDC hdc = 0;
+		HGLRC hrc = 0;
+
+		glm::ivec2 getSize();
+		int getSizeX() { return getSize().x; }
+		int getSizeY() { return getSize().y; }
+		void swapBuffers();
+
+	};
+
+
+	Window createWindow(int w, int h, const char * title);
+	void handleEvents(Window wind);
+	void enableOpengl(Window &wind);
 	bool shouldClose();
 };
