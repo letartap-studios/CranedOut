@@ -28,6 +28,11 @@ namespace platform
 
 	};
 
+	bool isKeyPressed(int key)
+	{
+		return GetAsyncKeyState(key);
+	}
+
 	Window createWindow(int w, int h, const char* title)
 	{
 
