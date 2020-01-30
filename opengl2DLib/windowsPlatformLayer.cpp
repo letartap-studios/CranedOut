@@ -18,6 +18,8 @@ namespace platform
 			case WM_CLOSE:
 				bShouldClose = true;
 				break;
+
+
 			default:
 				rez = DefWindowProc(wind, msg, wp, lp);
 				break;
@@ -28,7 +30,17 @@ namespace platform
 
 	};
 
-	HWND createWindow(int w, int h, const char* title)
+	bool isKeyPressed(int key)
+	{
+		return GetAsyncKeyState(key);
+	}
+
+	bool isMouseButtonPressed(MouseButton button)
+	{
+		return false;
+	}
+
+	Window createWindow(int w, int h, const char* title)
 	{
 
 		HINSTANCE hinst = GetModuleHandle(nullptr);
@@ -57,26 +69,28 @@ namespace platform
 			0
 		);
 		
+		Window window;
+		window.handle = wind;
 
-		return wind;
+		return window;
 	}
 
-	void handleEvents(HWND wind)
+	void handleEvents(Window wind)
 	{
 		MSG msg = {};
-		while (PeekMessage(&msg, wind, 0, 0, PM_REMOVE))
+		while (PeekMessage(&msg, wind.handle, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
 	}
 
-	void enableOpengl(HWND wind, HDC *hdc, HGLRC *hrc)
+	void enableOpengl(Window &wind)
 	{
 		PIXELFORMATDESCRIPTOR pfd = {};
 		int format = 0;
 
-		*hdc = GetDC(wind);
+		wind.hdc = GetDC(wind.handle);
 
 		pfd.nSize = sizeof(pfd);
 		pfd.nVersion = 1;
@@ -86,18 +100,35 @@ namespace platform
 		pfd.cDepthBits = 8;
 		pfd.iLayerType = PFD_MAIN_PLANE;
 
-		format = ChoosePixelFormat(*hdc, &pfd);
+		format = ChoosePixelFormat(wind.hdc, &pfd);
 
-		SetPixelFormat(*hdc, format, &pfd);
+		SetPixelFormat(wind.hdc, format, &pfd);
 
-		*hrc = wglCreateContext(*hdc);
+		wind.hrc = wglCreateContext(wind.hdc);
 
-		wglMakeCurrent(*hdc, *hrc);
+		wglMakeCurrent(wind.hdc, wind.hrc);
 	}
 
 	bool shouldClose()
 	{
 		return bShouldClose;
+	}
+
+	glm::ivec2 Window::getSize()
+	{
+		RECT r = {};
+		glm::ivec2 size = {};
+
+		GetClientRect(handle, &r);
+		size.x = r.right;
+		size.y = r.bottom;
+
+		return size;
+	}
+
+	void Window::swapBuffers()
+	{
+		SwapBuffers(hdc);
 	}
 
 };
