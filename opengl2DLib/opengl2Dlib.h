@@ -149,7 +149,7 @@ namespace gl2d
 	struct FrameBuffer
 	{
 		unsigned int fbo;
-		unsigned int texture;
+		Texture texture;
 		//todo remove
 		unsigned int depthtTexture;
 
@@ -210,17 +210,39 @@ namespace gl2d
 
 		// The origin will be the bottom left corner since it represents the line for the text to be drawn
 		//Pacing and lineSpace are influenced by size
-		void renderText(const glm::vec2 position, const char* text, const int text_length, const Font font, const Color4f color, const float size = 1.5f, const float spacing = 4, const float line_space = 3);
+		void renderText(const glm::vec2 position, const char* text, const Font font, const Color4f color, const float size = 1.5f, const float spacing = 4, const float line_space = 3);
 		
 		//todo color overloads
 		void renderRectangle(const Rect transforms, const Color4f colors[4], const glm::vec2 origin, const float rotation, const Texture texture, const glm::vec4 textureCoords = DefaultTextureCoords);
+		inline void renderRectangle(const Rect transforms, const Color4f colors, const glm::vec2 origin, const float rotation, const Texture texture, const glm::vec4 textureCoords = DefaultTextureCoords)
+		{
+			Color4f c[4] = {colors,colors,colors,colors} ;
+			renderRectangle(transforms, c, origin, rotation, texture, textureCoords);
+		}
+
 		void renderRectangleAbsRotation(const Rect transforms, const Color4f colors[4], const glm::vec2 origin, const float rotation, const Texture texture, const glm::vec4 textureCoords = DefaultTextureCoords);
+		inline void renderRectangleAbsRotation(const Rect transforms, const Color4f colors, const glm::vec2 origin, const float rotation, const Texture texture, const glm::vec4 textureCoords = DefaultTextureCoords) 
+		{
+			Color4f c[4] = { colors,colors,colors,colors };
+			renderRectangleAbsRotation(transforms, c, origin, rotation, texture, textureCoords);
+		}
 
 		void renderRectangle(const Rect transforms, const glm::vec2 origin, const float rotation, const Texture texture, const glm::vec4 textureCoords = DefaultTextureCoords);
 		void renderRectangleAbsRotation(const Rect transforms, const glm::vec2 origin, const float rotation, const Texture texture, const glm::vec4 textureCoords = DefaultTextureCoords);
 
 		void renderRectangle(const Rect transforms, const Color4f colors[4], const glm::vec2 origin = { 0,0 }, const float rotation = 0);
-		void renderRectangleAbsRotation(const Rect transforms, const Color4f colors[4], const glm::vec2 origin = {0,0}, const float rotation = 0);
+		inline void renderRectangle(const Rect transforms, const Color4f colors, const glm::vec2 origin = { 0,0 }, const float rotation = 0)
+		{
+			Color4f c[4] = { colors,colors,colors,colors };
+			renderRectangle(transforms, c, origin, rotation);
+		}
+
+		void renderRectangleAbsRotation(const Rect transforms, const Color4f colors[4], const glm::vec2 origin = { 0,0 }, const float rotation = 0);
+		inline void renderRectangleAbsRotation(const Rect transforms, const Color4f colors, const glm::vec2 origin = {0,0}, const float rotation = 0)
+		{
+			Color4f c[4] = { colors,colors,colors,colors };
+			renderRectangleAbsRotation(transforms, c, origin, rotation);
+		}
 
 		void render9Patch(const Rect position, const int borderSize, const Color4f color, const glm::vec2 origin, const float rotation, const Texture texture, const Texture_Coords textureCoords, const Texture_Coords inner_texture_coords);
 		void render9Patch2(const Rect position, const int borderSize, const Color4f color, const glm::vec2 origin, const float rotation, const Texture texture, const Texture_Coords textureCoords, const Texture_Coords inner_texture_coords);
