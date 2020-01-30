@@ -3,59 +3,68 @@
 #include <iostream>
 #include <fstream>
 #include <Windows.h>
+#include <chrono>
 
 #include "opengl2Dlib.h"
 #include "windowsPlatformLayer.h"
 
+#include "gameLayer.h"
+
 int main() 
 {
-	
-	auto wind = platform::createWindow(620, 420, "window");
-	HDC hdc;
-	HGLRC hrc;
-	platform::enableOpengl(wind, &hdc, &hrc);
 
+#pragma region init
+	auto wind = platform::createWindow(620, 420, "window");
+
+	//enabels opengl for that window
+	platform::enableOpengl(wind);
+
+	//after we have a window, we have to enable opengl drivers
 	glewInit();
 
+	//initialize the 2d library after we have initialized opengl drivers
 	gl2d::init();
 
 	gl2d::Renderer2D renderer;
 	renderer.create();
-	
-	gl2d::Font f("roboto_black.ttf");
-	gl2d::Texture texture("test.jpg");
+#pragma endregion
 
-	std::cout << texture.GetSize().x;
+	if (!initGame(renderer)) 
+	{
+		return 0;
+	}
+	
+	using ms = std::chrono::duration<float, std::milli>;
+
+	auto start = std::chrono::high_resolution_clock::now();
+	auto stop = std::chrono::high_resolution_clock::now();
 
 	while (!platform::shouldClose())
 	{
+		stop = std::chrono::high_resolution_clock::now();
+		float deltaTime = std::chrono::duration_cast<ms>(stop - start).count();
+		start = std::chrono::high_resolution_clock::now();
+		deltaTime /= 1000.f;
+
 		platform::handleEvents(wind);
 
-		int w = 620; int h = 420;
-		//glfwGetWindowSize(wind, &w, &h);
+		int w; int h;
+		w = wind.getSizeX();
+		h = wind.getSizeY();
+
 		renderer.updateWindowMetrics(w, h);
-		renderer.clearScreen();
 
-		gl2d::enableNecessaryGLFeatures();
-		renderer.resetCameraAndShader();
+		//run frame
+		//todo check delta time and vsync
+		if(!gameLoop(deltaTime, renderer, w, h))
+		{
+			break;
+		}
 
-		renderer.renderRectangle({ 100,350, 100, 100 }, { 0,0 }, 0, texture);
-
-		glm::vec4 colors[4] = { Colors_Orange,Colors_Orange ,Colors_Orange ,Colors_Orange };
-		renderer.renderRectangle({ 10,10, 100, 100 }, colors, {}, 30);
-
-		renderer.renderText({ 0,100 }, "text Text", 9, f, Colors_Red);
-		renderer.renderText({ 0,200 }, "text Vlad", 9, f, Colors_Blue);
-		renderer.renderText({ 0,300 }, "text Mihai", 10, f, Colors_Green);
-		renderer.renderText({ 0,400 }, "text2 Mihui", 11, f, Colors_Green);
-
-		renderer.renderRectangle({ 100,150, 100, 100 }, {0,0}, 0, texture);
-
-		renderer.flush();
-
-		//glfwSwapBuffers(wind);
-		SwapBuffers(hdc);
+		wind.swapBuffers();
 	}
+
+	closeGame();
 
 	return 0;
 }

@@ -821,8 +821,9 @@ namespace gl2d
 		glBindVertexArray(0);
 	}
 
-	void Renderer2D::renderText(const glm::vec2 position, const char * text, const int text_length, const Font font, const Color4f color, const float size, const float spacing, const float line_space)
+	void Renderer2D::renderText(const glm::vec2 position, const char * text, const Font font, const Color4f color, const float size, const float spacing, const float line_space)
 	{
+		const int text_length = strlen(text);
 		Rect rectangle;
 		rectangle.x = position.x;
 
@@ -1000,41 +1001,39 @@ namespace gl2d
 
 	void FrameBuffer::create(unsigned int w, unsigned int h)
 	{
-		FrameBuffer fb;
-		glGenFramebuffers(1, &fb.fbo);
-		glBindFramebuffer(GL_FRAMEBUFFER, fb.fbo);
+		glGenFramebuffers(1, &fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-		glGenTextures(1, &fb.texture);
-		glBindTexture(GL_TEXTURE_2D, fb.texture);
+		glGenTextures(1, &texture.id);
+		glBindTexture(GL_TEXTURE_2D, texture.id);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fb.texture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id, 0);
 
 		//glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
-		glGenTextures(1, &fb.depthtTexture);
-		glBindTexture(GL_TEXTURE_2D, fb.depthtTexture);
+		glGenTextures(1, &depthtTexture);
+		glBindTexture(GL_TEXTURE_2D, depthtTexture);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, w, h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, fb.depthtTexture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthtTexture, 0);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		*this = fb;
 	}
 
 	//todo vlod: will probasbly also clear the fbo
 	void FrameBuffer::resize(unsigned int w, unsigned int h)
 	{
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, texture.id);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
 		glBindTexture(GL_TEXTURE_2D, depthtTexture);
@@ -1047,7 +1046,7 @@ namespace gl2d
 		glDeleteFramebuffers(1, &fbo);
 		fbo = 0;
 
-		glDeleteTextures(1, &texture);
+		glDeleteTextures(1, &texture.id);
 		texture = 0;
 
 		glDeleteTextures(1, &depthtTexture);
