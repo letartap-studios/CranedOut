@@ -14,7 +14,6 @@ bool initGame(gl2d::Renderer2D &renderer)
 	fb.create(300, 300);
 	fb.clear();
 
-
 	renderer.updateWindowMetrics(300, 300);
 	renderer.renderRectangle({ 0, 0,300,300 }, Colors_Magenta, {0,0}, 0);
 

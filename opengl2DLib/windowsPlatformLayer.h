@@ -23,6 +23,17 @@ namespace platform
 	};
 
 
+	//use 'a' for characters of VK_SPACE for other keys
+	bool isKeyPressed(int key);
+
+	enum class MouseButton
+	{
+		left,
+		right
+	};
+
+	bool isMouseButtonPressed(MouseButton button);
+
 	Window createWindow(int w, int h, const char * title);
 	void handleEvents(Window wind);
 	void enableOpengl(Window &wind);

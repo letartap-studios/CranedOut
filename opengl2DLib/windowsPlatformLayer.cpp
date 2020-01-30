@@ -18,6 +18,8 @@ namespace platform
 			case WM_CLOSE:
 				bShouldClose = true;
 				break;
+
+
 			default:
 				rez = DefWindowProc(wind, msg, wp, lp);
 				break;
@@ -27,6 +29,16 @@ namespace platform
 		}
 
 	};
+
+	bool isKeyPressed(int key)
+	{
+		return GetAsyncKeyState(key);
+	}
+
+	bool isMouseButtonPressed(MouseButton button)
+	{
+		return false;
+	}
 
 	Window createWindow(int w, int h, const char* title)
 	{

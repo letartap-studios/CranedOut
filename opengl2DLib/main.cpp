@@ -39,7 +39,6 @@ int main()
 	auto start = std::chrono::high_resolution_clock::now();
 	auto stop = std::chrono::high_resolution_clock::now();
 
-
 	while (!platform::shouldClose())
 	{
 		stop = std::chrono::high_resolution_clock::now();
