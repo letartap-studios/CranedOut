@@ -14,10 +14,10 @@ int main()
 {
 
 #pragma region init
-	auto wind = platform::createWindow(620, 420, "window");
-
+	platform::Window wind(620, 420, "window");
+	
 	//enabels opengl for that window
-	platform::enableOpengl(wind);
+	wind.enableOpengl();
 
 	//after we have a window, we have to enable opengl drivers
 	glewInit();
@@ -46,7 +46,7 @@ int main()
 		start = std::chrono::high_resolution_clock::now();
 		deltaTime /= 1000.f;
 
-		platform::handleEvents(wind);
+		wind.handleEvents();
 
 		int w; int h;
 		w = wind.getSizeX();
@@ -56,7 +56,7 @@ int main()
 
 		//run frame
 		//todo check delta time and vsync
-		if(!gameLoop(deltaTime, renderer, w, h))
+		if(!gameLoop(deltaTime, renderer, w, h, wind))
 		{
 			break;
 		}

@@ -1,6 +1,8 @@
 #include "gameLayer.h"
+#include "windowsPlatformLayer.h"
 #include <sstream>
 #include <Windows.h>
+
 
 gl2d::Font f;
 gl2d::Texture texture;
@@ -22,7 +24,7 @@ bool initGame(gl2d::Renderer2D &renderer)
 	return true;
 }
 
-bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h)
+bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platform::Window &wind)
 {
 	renderer.clearScreen();
 
@@ -43,7 +45,6 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h)
 	//renderer.renderRectangle({ 10,10, 100, 100 }, colors, {}, 30);
 
 	renderer.flush();
-
 
 	return true;
 }

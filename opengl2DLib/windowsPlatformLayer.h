@@ -11,6 +11,12 @@ namespace platform
 
 	struct Window
 	{
+		Window() {}
+		Window(int w, int h, const char* title) { create(w, h, title); }
+
+		Window(const Window &other) = delete;
+		Window operator= (const Window &other) = delete;
+
 		HWND handle = 0;
 		HDC hdc = 0;
 		HGLRC hrc = 0;
@@ -20,22 +26,31 @@ namespace platform
 		int getSizeY() { return getSize().y; }
 		void swapBuffers();
 
+		void create(int w, int h, const char* title);
+		void handleEvents();
+		void enableOpengl();
+
+		bool isLeftMouseButtonHeld();
+		bool isRightMouseButtonHeld();
+
+		//WM_LBUTTONDBLCLK	The left mouse button was double - clicked.
+		//WM_LBUTTONDOWN	The left mouse button was pressed.
+		//WM_LBUTTONUP	The left mouse button was released.
+		//WM_MBUTTONDBLCLK	The middle mouse button was double - clicked.
+		//WM_MBUTTONDOWN	The middle mouse button was pressed.
+		//WM_MBUTTONUP	The middle mouse button was released.
+		//WM_RBUTTONDBLCLK	The right mouse button was double - clicked.
+		//WM_RBUTTONDOWN	The right mouse button was pressed.
+		//WM_RBUTTONUP	The right mouse button was released.
+
+		char leftClick = 0;
+		char rightClick = 0;
+		//char mouseIn = 0;
 	};
 
-
-	//use 'a' for characters of VK_SPACE for other keys
+	//use 'A' for characters of VK_SPACE for other keys
 	bool isKeyPressed(int key);
 
-	enum class MouseButton
-	{
-		left,
-		right
-	};
 
-	bool isMouseButtonPressed(MouseButton button);
-
-	Window createWindow(int w, int h, const char * title);
-	void handleEvents(Window wind);
-	void enableOpengl(Window &wind);
 	bool shouldClose();
 };
