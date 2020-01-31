@@ -6,9 +6,13 @@ bool bShouldClose = false;
 
 namespace platform
 {
+	typedef DWORD WINAPI XInputGetState_t(DWORD dwUserIndex, XINPUT_STATE* pState);
+	static XInputGetState_t *DynamicXinputGetState;
+	bool xInputLoaded = 0;
 
 	namespace internal
 	{
+		
 		LRESULT CALLBACK windProc(HWND wind, UINT msg, WPARAM wp, LPARAM lp)
 		{
 			LRESULT rez = 0;
@@ -184,6 +188,26 @@ namespace platform
 	bool Window::isRightMouseButtonHeld()
 	{
 		return ((GetKeyState(VK_RBUTTON) & 0x80) != 0);
+	}
+
+	glm::ivec2 Window::getRelMousePosition()
+	{
+		POINT p = {};
+		GetCursorPos(&p);
+
+		ScreenToClient(handle, &p);
+
+		return { p.x, p.y };
+	}
+
+	void loadXinput()
+	{
+		HMODULE xinputLib = LoadLibrary("xinput1_3.dll");
+		if (xinputLib)
+		{
+			DynamicXinputGetState = (XInputGetState_t*)GetProcAddress(xinputLib, "XInputGetState");
+			xInputLoaded = 1;
+		}
 	}
 
 };

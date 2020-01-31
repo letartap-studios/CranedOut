@@ -1,6 +1,8 @@
 #pragma once
 #include <Windows.h>
 #include "glm/vec2.hpp"
+#include <Xinput.h>
+#include "glm/vec2.hpp"
 
 namespace platform
 {
@@ -48,11 +50,14 @@ namespace platform
 		char leftReleased = 0;
 		char rightReleased = 0;
 		//char mouseIn = 0;
+
+		glm::ivec2 getRelMousePosition();
 	};
 
 	//use 'A' for characters of VK_SPACE for other keys
 	bool isKeyPressed(int key);
 
+	void loadXinput();
 
 	bool shouldClose();
 };
