@@ -354,6 +354,15 @@ namespace gl2d
 
 	void gl2d::Renderer2D::flush()
 	{
+		if(windowH == 0 || windowW == 0)
+		{
+			spritePositionsCount = 0;
+			spriteColorsCount = 0;
+			spriteTexturesCount = 0;
+			texturePositionsCount = 0;
+			return;
+		}
+
 		if (spriteTexturesCount == 0)
 		{
 			return;
