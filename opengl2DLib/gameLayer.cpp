@@ -32,9 +32,12 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 
 	//renderer.renderRectangle({ 10,10, 100, 100 }, Colors_Orange, {}, 30);
 
-	//todo remove text length param
 
 	renderer.renderText({ 0,100 }, std::to_string(1.f/deltaTime).c_str(), f, Colors_Red);
+	if (wind.leftReleased)
+	{
+		std::cout << "test";
+	}
 	renderer.renderText({ 0,200 }, "text Vlad", f, Colors_Blue);
 	renderer.renderText({ 0,300 }, "text Mihai", f, Colors_Green);
 

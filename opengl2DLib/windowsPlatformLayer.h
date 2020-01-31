@@ -45,6 +45,8 @@ namespace platform
 
 		char leftClick = 0;
 		char rightClick = 0;
+		char leftReleased = 0;
+		char rightReleased = 0;
 		//char mouseIn = 0;
 	};
 

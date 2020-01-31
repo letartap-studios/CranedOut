@@ -36,18 +36,18 @@ namespace platform
 				if (windPtr)
 					windPtr->rightClick = 1;
 				break;
-			//case WM_RBUTTONUP:
-			//	if (windPtr)
-			//		windPtr->rightHeld = 0;
-			//	break;
+			case WM_RBUTTONUP:
+				if (windPtr)
+					windPtr->rightReleased= 1;
+				break;
 			case WM_LBUTTONDOWN:
 				if (windPtr)
 					windPtr->leftClick = 1;
 				break;
-			//case WM_LBUTTONUP:
-			//	if (windPtr)
-			//		windPtr->leftHeld = 0;
-			//	break;
+			case WM_LBUTTONUP:
+				if (windPtr)
+					windPtr->leftReleased = 1;
+				break;
 			//case WM_MOUSELEAVE:
 			//	if (windPtr)
 			//	{
@@ -143,6 +143,8 @@ namespace platform
 
 		rightClick = 0;
 		leftClick = 0;
+		leftReleased = 0;
+		rightReleased = 0;
 
 		while (PeekMessage(&msg, handle, 0, 0, PM_REMOVE))
 		{
