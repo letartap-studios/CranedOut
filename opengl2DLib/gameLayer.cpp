@@ -32,16 +32,17 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 
 	//renderer.renderRectangle({ 10,10, 100, 100 }, Colors_Orange, {}, 30);
 
-	std::cout << wind.getRelMousePosition().x << ' ' << wind.getRelMousePosition().y << "\n";
+	//std::cout << platform::joyStickY() << "\n";
 
+	renderer.currentCamera.position.y += platform::getPlayerMovement(0).y * deltaTime * -200;
+	renderer.currentCamera.position.x += platform::getPlayerMovement(0).x * deltaTime * 200;
 
 	renderer.renderText({ 0,100 }, std::to_string(1.f/deltaTime).c_str(), f, Colors_Red);
 	
 	renderer.renderText({ 0,200 }, "text Vlad", f, Colors_Blue);
 	renderer.renderText({ 0,300 }, "text Mihai", f, Colors_Green);
 
-
-	renderer.renderRectangle({ 100,150, 100, 100 }, { 0,0 }, 0, fb.texture);
+	renderer.renderRectangle({ 100,300, 100, 100 }, { 0,0 }, 0, fb.texture);
 	//renderer.render9Patch2({ 100,150, 200, 200 }, 10, Colors_White, { 0,0 }, 0, texture, DefaultTextureCoords, { 0,0.8,0.8,0 });
 
 	//renderer.renderRectangle({ 10,10, 100, 100 }, colors, {}, 30);

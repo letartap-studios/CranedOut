@@ -59,5 +59,8 @@ namespace platform
 
 	void loadXinput();
 
+	glm::vec2 joyStick();
+	glm::vec2 getPlayerMovement(int id);
+
 	bool shouldClose();
 };

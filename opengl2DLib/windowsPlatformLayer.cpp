@@ -208,6 +208,122 @@ namespace platform
 			DynamicXinputGetState = (XInputGetState_t*)GetProcAddress(xinputLib, "XInputGetState");
 			xInputLoaded = 1;
 		}
+
+		
+	}
+
+	const int keyBindings[2][4] = 
+	{ {'W', 'A', 'S', 'D'},
+	{VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT }
+	};
+
+	glm::vec2 getPlayerMovement(int id)
+	{
+		if(id>1)
+		{
+			return {};
+		}
+		int i = id;
+		XINPUT_STATE s;
+
+		if (DynamicXinputGetState != nullptr && DynamicXinputGetState(i, &s) == ERROR_SUCCESS)
+		{
+			XINPUT_GAMEPAD *pad = &s.Gamepad;
+
+			float retValX = pad->sThumbLX / (float)SHRT_MAX;
+
+			retValX = max(-1.f, retValX);
+			retValX = min(1.f, retValX);
+
+			if (abs(retValX) < 0.12)
+			{
+				retValX = 0.f;
+			}
+
+			float retValY = pad->sThumbLY / (float)SHRT_MAX;
+
+			retValY = max(-1.f, retValY);
+			retValY = min(1.f, retValY);
+
+			if (abs(retValY) < 0.12)
+			{
+				retValY = 0.f;
+			}
+
+			return { retValX, retValY };
+			//bool UP = (pad->wButtons & XINPUT_GAMEPAD_DPAD_UP);
+			//return (float)UP;
+		}else
+		{
+			float retValX = 0;
+			float retValY = 0;
+
+			if (isKeyPressed(keyBindings[i][0]))
+			{
+				retValY += 1;
+			}
+
+			if (isKeyPressed(keyBindings[i][1]))
+			{
+				retValX -= 1;
+			}
+
+			if (isKeyPressed(keyBindings[i][2]))
+			{
+				retValY -= 1;
+			}
+
+			if (isKeyPressed(keyBindings[i][3]))
+			{
+				retValX += 1;
+			}
+
+			return{ retValX, retValY };
+		
+		}
+	}
+
+	glm::vec2 joyStick()
+	{
+		if (DynamicXinputGetState != nullptr)
+			for (int i = 0; i < XUSER_MAX_COUNT; i++)
+			{
+				XINPUT_STATE s;
+				if (DynamicXinputGetState(i, &s) == ERROR_SUCCESS)
+				{
+					XINPUT_GAMEPAD *pad = &s.Gamepad;
+					
+					float retValX = pad->sThumbLX / (float)SHRT_MAX;
+
+					retValX = max(-1.f, retValX);
+					retValX = min(1.f, retValX);
+
+					if (abs(retValX) < 0.12)
+					{
+						retValX = 0.f;
+					}
+
+					float retValY = pad->sThumbLY / (float)SHRT_MAX;
+
+					retValY = max(-1.f, retValY);
+					retValY = min(1.f, retValY);
+
+					if(abs(retValY) < 0.12)
+					{
+						retValY = 0.f;
+					}
+
+					return { retValX, retValY };
+					//bool UP = (pad->wButtons & XINPUT_GAMEPAD_DPAD_UP);
+					//return (float)UP;
+				}
+				else
+				{
+					
+				}
+
+			}
+		return {};
 	}
 
 };

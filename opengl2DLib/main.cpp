@@ -29,6 +29,8 @@ int main()
 	renderer.create();
 #pragma endregion
 
+	platform::loadXinput();
+
 	if (!initGame(renderer)) 
 	{
 		return 0;
