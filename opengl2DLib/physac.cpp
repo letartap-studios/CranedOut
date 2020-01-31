@@ -1,0 +1,5 @@
+#define PHYSAC_IMPLEMENTATION
+#define PHYSAC_NO_THREADS
+#define PHYSAC_STANDALONE
+#define PHYSAC_STATIC 
+#include "physac.h"
