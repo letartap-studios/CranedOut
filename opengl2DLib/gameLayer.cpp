@@ -5,24 +5,23 @@
 
 
 gl2d::Font f;
-gl2d::Texture texture;
+gl2d::Texture floorTexture;
 gl2d::FrameBuffer fb;
 
 bool initGame(gl2d::Renderer2D &renderer)
 {
 	f.createFromFile("roboto_black.ttf");
-	texture.loadFromFile("test.jpg");
+	floorTexture.loadFromFile("floor.png");
 	
-	fb.create(300, 300);
-	fb.clear();
-
-	renderer.updateWindowMetrics(300, 300);
-	renderer.renderRectangle({ 0, 0,300,300 }, Colors_Magenta, {0,0}, 0);
-
-	renderer.flushFBO(fb);
 
 	return true;
 }
+
+int gameWith = 1000;
+int gameHeigth = 600;
+
+glm::vec2 players[1] = {};
+int playerSize = 50;
 
 bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platform::Window &wind)
 {
@@ -34,18 +33,24 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 
 	//std::cout << platform::joyStickY() << "\n";
 
-	renderer.currentCamera.position.y += platform::getPlayerMovement(0).y * deltaTime * -200;
-	renderer.currentCamera.position.x += platform::getPlayerMovement(0).x * deltaTime * 200;
+	renderer.currentCamera.position.y = (gameHeigth-h)/2.f;
+	renderer.currentCamera.position.x = (gameWith-w)/2.f;
+
+	renderer.currentCamera.zoom = platform::getPlayerMovement(0).y * 2 + 1;
+
+	//renderer.currentCamera.position.y += platform::getPlayerMovement(0).y * deltaTime * -200;
+	//renderer.currentCamera.position.x += platform::getPlayerMovement(0).x * deltaTime * 200;
 
 	renderer.renderText({ 0,100 }, std::to_string(1.f/deltaTime).c_str(), f, Colors_Red);
 	
-	renderer.renderText({ 0,200 }, "text Vlad", f, Colors_Blue);
-	renderer.renderText({ 0,300 }, "text Mihai", f, Colors_Green);
+#pragma region map
+	renderer.render9Patch2({ 0, gameHeigth, gameWith, 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
+	renderer.render9Patch2({ -100,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
+	renderer.render9Patch2({ gameWith ,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
 
-	renderer.renderRectangle({ 100,300, 100, 100 }, { 0,0 }, 0, fb.texture);
-	//renderer.render9Patch2({ 100,150, 200, 200 }, 10, Colors_White, { 0,0 }, 0, texture, DefaultTextureCoords, { 0,0.8,0.8,0 });
+#pragma endregion
 
-	//renderer.renderRectangle({ 10,10, 100, 100 }, colors, {}, 30);
+
 
 	renderer.flush();
 
