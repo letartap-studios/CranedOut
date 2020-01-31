@@ -14,7 +14,7 @@ int main()
 {
 
 #pragma region init
-	platform::Window wind(620, 420, "window");
+	platform::Window wind(1000, 800, "window");
 	
 	//enabels opengl for that window
 	wind.enableOpengl();
