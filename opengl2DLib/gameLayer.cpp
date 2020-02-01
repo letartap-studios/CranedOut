@@ -6,14 +6,14 @@
 
 gl2d::Font f;
 gl2d::Texture floorTexture;
-gl2d::FrameBuffer fb;
+gl2d::Texture gearTexture;
 
 bool initGame(gl2d::Renderer2D &renderer)
 {
 	f.createFromFile("roboto_black.ttf");
 	floorTexture.loadFromFile("floor.png");
+	gearTexture.loadFromFile("gear.png");
 	
-
 	return true;
 }
 
@@ -62,13 +62,11 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 			zoom = min(zoom, Hzoom);
 		}
 
-
 		zoom = min(zoom, 3);
 		zoom = max(zoom, 0.1);
 
 		renderer.currentCamera.zoom = zoom;
 		//renderer.currentCamera.zoom = platform::getPlayerMovement(0).y * 1 + 1;
-		std::cout << renderer.currentCamera.zoom << "\n";
 	}
 	
 #pragma endregion
@@ -108,8 +106,8 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 		}
 	}
 
-	renderer.renderRectangle({ players[0].x - playerSize / 2, players[0].y - playerSize / 2 , playerSize , playerSize }, {}, 0, floorTexture);
-	renderer.renderRectangle({ players[1].x - playerSize / 2, players[1].y - playerSize / 2 , playerSize , playerSize }, {}, 0, floorTexture);
+	renderer.renderRectangle({ players[0].x - playerSize / 2, players[0].y - playerSize / 2 , playerSize , playerSize }, {}, 0, gearTexture);
+	renderer.renderRectangle({ players[1].x - playerSize / 2, players[1].y - playerSize / 2 , playerSize , playerSize }, {}, 0, gearTexture);
 
 #pragma endregion
 
@@ -118,7 +116,6 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 	renderer.render9Patch2({ -100,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
 	renderer.render9Patch2({ gameWith ,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
 #pragma endregion
-
 
 	renderer.flush();
 
