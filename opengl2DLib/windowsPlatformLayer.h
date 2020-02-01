@@ -29,7 +29,7 @@ namespace platform
 		void swapBuffers();
 
 		void create(int w, int h, const char* title);
-		void handleEvents();
+		void handleEvents(int count);
 		void enableOpengl();
 
 		bool isLeftMouseButtonHeld();

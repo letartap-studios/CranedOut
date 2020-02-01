@@ -48,7 +48,7 @@ int main()
 		start = std::chrono::high_resolution_clock::now();
 		deltaTime /= 1000.f;
 
-		wind.handleEvents();
+		wind.handleEvents(120);
 
 		int w; int h;
 		w = wind.getSizeX();

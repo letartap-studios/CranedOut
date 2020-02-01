@@ -141,7 +141,7 @@ namespace platform
 
 	}
 
-	void Window::handleEvents()
+	void Window::handleEvents(int count)
 	{
 		MSG msg = {};
 
@@ -150,11 +150,27 @@ namespace platform
 		leftReleased = 0;
 		rightReleased = 0;
 
-		while (PeekMessage(&msg, handle, 0, 0, PM_REMOVE))
+		if (count != 0)
 		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			int i = 0;
+			while (PeekMessage(&msg, handle, 0, 0, PM_REMOVE))
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+				i++;
+				if (i > count)break;
+
+			}
+		}else
+		{
+			while (PeekMessage(&msg, handle, 0, 0, PM_REMOVE))
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
 		}
+
+		
 		
 	}
 

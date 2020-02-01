@@ -11,6 +11,7 @@ gl2d::Texture floorTexture;
 gl2d::Texture gearTexture;
 gl2d::Texture animTexture;
 gl2d::Texture backgroundTexture;
+gl2d::Texture stringTexture;
 Animate anim;
 bool pickedUp = false;
 glm::vec2 tempPadding;
@@ -25,6 +26,7 @@ bool initGame(gl2d::Renderer2D &renderer)
 	f.createFromFile("roboto_black.ttf");
 	floorTexture.loadFromFile("floor.png");
 	gearTexture.loadFromFile("gear.png");
+	stringTexture.loadFromFile("string.png");
 
 	InitPhysics();
 
@@ -235,7 +237,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 #pragma region render strings
 
 	{
-		const int elements = 15;
+		const int elements = 30;
 		for (int i = 0; i < 2; i++)
 		{
 			glm::vec2 vecDir = crane.getPos() - players[i];
@@ -247,7 +249,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 				float advance = (float)c / (float)elements;
 				glm::vec2 pos = vecDir * advance + drawPos;
 
-				renderer.renderRectangle({ pos.x , pos.y, 10, 10 }, {}, 0, floorTexture);
+				renderer.renderRectangle({ pos.x , pos.y, 10, 10 }, {}, 0, stringTexture);
 			}
 		}
 	}
@@ -259,8 +261,8 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 
 	for(int i=0; i<=gameHeigth/100; i++)
 	{
-		renderer.renderRectangle({ -100, i * 100, 100, 100 }, {}, 0, floorTexture);
-		renderer.renderRectangle({ gameWith ,i * 100 , 100, 100 }, {}, 0, floorTexture);
+		renderer.renderRectangle({ -100, i * 100, 100, 100 }, {1,1,1,0.3}, {}, 0, floorTexture);
+		renderer.renderRectangle({ gameWith ,i * 100 , 100, 100 }, { 1,1,1,0.3 }, {}, 0, floorTexture);
 	}
 
 	for(int i=0; i<gameWith/100;i++)
@@ -272,7 +274,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 	//renderer.render9Patch2({ -100,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
 	//renderer.render9Patch2({ gameWith ,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
 #pragma endregion
-	podea.Draw(Colors_Red, renderer);
+	//podea.Draw(Colors_Red, renderer);
 	cub.Draw(Colors_Magenta, renderer);
 	crane.Draw(gearTexture, renderer);
 
