@@ -20,7 +20,7 @@ gl2d::Texture stringTexture;
 gl2d::Texture macara;
 gl2d::Texture topTexture;
 gl2d::Texture topTexture2;
-gl2d::Texture blockTexture;
+gl2d::Texture blockTexture[2];
 
 Animate playerAnim[2];
 bool pickedUp = false;
@@ -47,7 +47,8 @@ bool initGame(gl2d::Renderer2D& renderer)
 	macara.loadFromFile("animal_macara.png");
 	topTexture.loadFromFile("top.png");
 	topTexture2.loadFromFile("top2.png");
-	blockTexture.loadFromFile("block.png");
+	blockTexture[0].loadFromFile("block.png");
+	blockTexture[1].loadFromFile("test.jpg");
 
 	macaraAnim.create(1, 4, 0, macara);
 
@@ -63,6 +64,7 @@ bool initGame(gl2d::Renderer2D& renderer)
 	bodies.push_back({ 50, 400, 50, 50, 0.2 });
 	bodies.push_back({ 50, 500, 50, 50, 0.2 });
 	bodies.push_back({ 250, 500, 100, 50, 0.2 });
+	bodies.push_back({450, 500, 100, 100, 0.1});
 
 	crane.Create(150, 0, 50, 50, 4, 4000);
 	crane.body->freezeOrient = true;
@@ -446,7 +448,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer,  int w,  int h,  plat
 
 	for (auto& cub : bodies)
 	{
-		cub.Draw(blockTexture, renderer);
+		cub.Draw(blockTexture[/*rand() % 2*/0], renderer);
 	}
 
 	//for (int i = -1; i <= gameWith / 100; i++)
@@ -455,22 +457,20 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer,  int w,  int h,  plat
 
 #pragma region render strings
 
+	for (int i = 0; i < 2; i++)
 	{
-		for (int i = 0; i < 2; i++)
+		const int elements = 20 * (((float)wireSize[i] - (float)wireSizeMinEnarge) / ((float)wireSizeMaxEnarge - (float)wireSizeMinEnarge)) + 10;
+
+		glm::vec2 vecDir = crane.getPos() - players[i];
+		glm::vec2 drawPos = players[i];
+
+
+		for (int c = 1; c < elements; c++)
 		{
-			const int elements = 20 * (((float)wireSize[i] - (float)wireSizeMinEnarge) / ((float)wireSizeMaxEnarge - (float)wireSizeMinEnarge)) + 10;
+			float advance = (float)c / (float)elements;
+			glm::vec2 pos = vecDir * advance + drawPos;
 
-			glm::vec2 vecDir = crane.getPos() - players[i];
-			glm::vec2 drawPos = players[i];
-
-
-			for (int c = 1; c < elements; c++)
-			{
-				float advance = (float)c / (float)elements;
-				glm::vec2 pos = vecDir * advance + drawPos;
-
-				renderer.renderRectangle({ pos.x , pos.y, 10, 10 }, {}, 0, stringTexture);
-			}
+			renderer.renderRectangle({ pos.x , pos.y, 10, 10 }, {}, 0, stringTexture);
 		}
 	}
 	crane.Draw(macaraAnim.texture, renderer, macaraAnim.getTexturePos());
