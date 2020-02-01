@@ -417,9 +417,9 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer,  int w,  int h,  plat
 		bodies[i].body->velocity.y *= 0.8f;
 
 	}
-
+	  
 	
-#pragma endregion
+#pragma endregion 
 
 
 
