@@ -219,7 +219,8 @@ extern "C" {                                    // Prevents name mangling of fun
     PHYSACDEF void SetPhysicsBodyRotation(PhysicsBody body, float radians);                                     // Sets physics body shape transform based on radians parameter
     PHYSACDEF void DestroyPhysicsBody(PhysicsBody body);                                                        // Unitializes and destroy a physics body
     PHYSACDEF void ClosePhysics(void);                                                                          // Unitializes physics pointers and closes physics loop thread
-
+    Vector2 getGravity();
+	
 #if defined(__cplusplus)
 }
 #endif
