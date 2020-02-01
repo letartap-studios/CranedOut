@@ -50,6 +50,7 @@ glm::vec2 players[2] = { {100, 100}, {400, 100} };
 int playerSize = 40;
 
 int wireSize[2] = { 100, 100 };
+int maxWireSize = 600;
 
 bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platform::Window &wind)
 {
@@ -182,6 +183,15 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 			float magnifier = (wireLength[i] - wireSize[i]) / 50.f;
 			PhysicsAddForce(crane.body, { (crane.getPos().x - players[i].x) * velocity * magnifier, (crane.getPos().y - players[i].y) * velocity * magnifier });
 			//crane.body->velocity = { (crane.body->position.x - players[0].x) * velocity, (crane.body->position.y - players[0].y) * velocity };
+			
+			if(wireLength[i] > maxWireSize)
+			{
+				glm::vec2 direction = players[i] - crane.getPos();
+				direction = glm::normalize(direction);
+				direction *= wireLength[i] - maxWireSize;
+				crane.body->position.x += direction.x;
+				crane.body->position.y += direction.y;
+			}
 		}
 	}
 
