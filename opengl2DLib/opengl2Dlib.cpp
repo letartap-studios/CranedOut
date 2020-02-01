@@ -503,7 +503,7 @@ namespace gl2d
 			cameraCenter.x = windowW / 2.0f;
 			cameraCenter.y = -windowH / 2.0f;
 
-			std::cout << cameraCenter.x << "\n";
+			//std::cout << cameraCenter.x << "\n";
 
 			v1 = scaleAroundPoint(v1, cameraCenter, currentCamera.zoom);
 			v2 = scaleAroundPoint(v2, cameraCenter, currentCamera.zoom);
