@@ -5,6 +5,7 @@
 #include "Animate.h"
 #include "Rectangle.h"
 #include <algorithm>
+#include "rayfork_audio.h"
 
 gl2d::Font f;
 gl2d::Texture floorTexture;
@@ -14,19 +15,25 @@ gl2d::Texture backgroundTexture;
 Animate anim;
 bool pickedUp = false;
 glm::vec2 tempPadding;
+auto audio = rf_load_short_audio_stream_from_file("audio_hero_Wolf_DIGIP03-77.mp3");
+
 
 RectangleBody podea, cub, crane;
 
 int gameWith = 800;
 int gameHeigth = 700;
 
+extern rf_audio_context rfAudioContext;
+
 bool initGame(gl2d::Renderer2D &renderer)
 {
 	f.createFromFile("roboto_black.ttf");
 	floorTexture.loadFromFile("floor.png");
 	gearTexture.loadFromFile("gear.png");
-
 	InitPhysics();
+	rf_audio_set_context_ptr(&rfAudioContext);
+
+	rf_audio_init(&rfAudioContext);
 
 	podea.Create(0 + gameWith/2, gameHeigth + 400 /2, gameWith, 400, 0.1);
 	podea.body->enabled = false;
@@ -40,6 +47,7 @@ bool initGame(gl2d::Renderer2D &renderer)
 
 	anim.create(4, 1, 50, animTexture);
 
+	
 	return true;
 }
 
@@ -56,6 +64,12 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 	float velocity = -2.0 * deltaTime;
 
 	RunPhysicsStep();
+
+	if(platform::isKeyPressed('K'))
+	{
+		rf_play_short_audio_stream(audio);
+		std::cout << "k";
+	}
 	
 #pragma region determinePlacement
 	renderer.currentCamera.position.y = (gameHeigth - h) / 2.f;
@@ -201,7 +215,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 		crane.body->velocity.y = min(crane.body->velocity.y, clampValue);
 	}
 
-	std::cout<<crane.body->velocity.y<< std::endl;
+	//std::cout<<crane.body->velocity.y<< std::endl;
 	if (cub.PointCollision(crane.getPos()))
 	{
 		if(platform::isKeyPressed(VK_SPACE))
