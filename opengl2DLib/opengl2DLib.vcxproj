@@ -23,6 +23,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="opengl2Dlib.cpp" />
     <ClCompile Include="physac.cpp" />
+    <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="stb_truetype.cpp" />
     <ClCompile Include="windowsPlatformLayer.cpp" />
@@ -32,6 +33,7 @@
     <ClInclude Include="opengl2Dlib.h" />
     <ClInclude Include="physac.h" />
     <ClInclude Include="raymath.h" />
+    <ClInclude Include="Rectangle.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="stb_truetype.h" />
     <ClInclude Include="windowsPlatformLayer.h" />
