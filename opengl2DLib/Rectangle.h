@@ -16,7 +16,7 @@ struct RectangleBody
 	
 	RectangleBody() = default;
 
-	RectangleBody(const float xPos, const float yPos, const float width, const float height, const float density, int padd = 0)
+	RectangleBody(const float xPos, const float yPos, const float width, const float height, const float density, const int padd = 0)
 	{
 		Create(xPos, yPos, width, height, density, padd);
 	}
@@ -26,12 +26,12 @@ struct RectangleBody
 		return { body->position.x, body->position.y - yPadding };
 	}
 	
-	void setPos(glm::vec2 pos)
+	void setPos(const glm::vec2 pos)
 	{
 		body->position =  { pos.x, pos.y + yPadding };
 	}
 
-	void Create(const float xPos, const float yPos, const float width, const float height, const float density, int padd = 0)
+	void Create(const float xPos, const float yPos, const float width, const float height, const float density, const int padd = 0)
 	{
 		yPadding = padd;
 		this->width = width;
@@ -40,6 +40,8 @@ struct RectangleBody
 		body = CreatePhysicsBodyRectangle({ xPos,yPos + padd}, width, height, density);
 		body->dynamicFriction *= 2;
 		body->staticFriction *= 2;
+
+		//body->inertia *= .001 * deltaTime;
 	}
 
 	void Draw(const gl2d::Texture texture, gl2d::Renderer2D& renderer, glm::vec4 texCoord = DefaultTextureCoords) const
@@ -48,18 +50,18 @@ struct RectangleBody
 			renderer.renderRectangle({ body->position.x - width / 2, getPos().y - height / 2, width, height }, { 0,0 }, glm::degrees(-body->orient), texture, texCoord);
 	}
 
-	void Draw( const gl2d::Color4f color, gl2d::Renderer2D& renderer) const
+	void Draw(const gl2d::Color4f color, gl2d::Renderer2D& renderer) const
 	{
 		if (body)
 			renderer.renderRectangle({ body->position.x - width/2, getPos().y - height/2, width, height }, color, { 0,0 }, glm::degrees(-body->orient));
 	}
 
-	float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
+	float sign(const glm::vec2 p1, const glm::vec2 p2, const glm::vec2 p3)
 	{
 		return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
 	}
 
-	bool PointInTriangle(glm::vec2 pt, glm::vec2 v1, glm::vec2 v2, glm::vec2 v3)
+	bool PointInTriangle(const glm::vec2 pt, const glm::vec2 v1, const glm::vec2 v2, const glm::vec2 v3)
 	{
 		bool b1, b2, b3;
 
@@ -70,11 +72,11 @@ struct RectangleBody
 		return ((b1 == b2) && (b2 == b3));
 	}
 	
-	bool PointCollision(glm::vec2 pos)
+	bool PointCollision(const glm::vec2 pos)
 	{
 		glm::vec2 colt[4];
 
-		auto vect = [](glm::vec2 a, glm::vec2 b)
+		auto vect = [](const glm::vec2 a, const glm::vec2 b)
 		{
 			return glm::vec2(b - a);
 		};
