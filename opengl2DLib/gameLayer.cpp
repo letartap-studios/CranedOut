@@ -17,21 +17,64 @@ bool initGame(gl2d::Renderer2D &renderer)
 	return true;
 }
 
-int gameWith = 500;
-int gameHeigth = 600;
+int gameWith = 800;
+int gameHeigth = 700;
 
 glm::vec2 players[2] = { {100, 100}, {400, 100} };
-int playerSize = 50;
+int playerSize = 40;
 
 bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platform::Window &wind)
 {
 	renderer.clearScreen();
 
-	renderer.currentCamera.position.y = (gameHeigth-h)/2.f;
-	renderer.currentCamera.position.x = (gameWith-w)/2.f;
+#pragma region determinePlacement
+	renderer.currentCamera.position.y = (gameHeigth - h) / 2.f;
+	renderer.currentCamera.position.x = (gameWith - w) / 2.f;
 
-	renderer.currentCamera.zoom = platform::getPlayerMovement(0).y * 1 + 1;
-	std::cout << renderer.currentCamera.zoom << "\n";
+	{
+		float zoom = 1;
+		if (gameWith < w)
+		{
+			zoom = (w) / (gameWith * 1.9);
+		}
+		else if (gameWith > w)
+		{
+			zoom = (w) / (gameWith * 0.9);
+		}
+		
+		float Hzoom = 1;
+		if (gameHeigth < h)
+		{
+			Hzoom = (h) / (gameHeigth * 2.0);
+		}
+		else if (gameHeigth > h)
+		{
+			Hzoom = (h) / (gameHeigth * 0.9);
+		}
+
+		if(gameWith*1.1 < w || gameHeigth*1.1 < h)
+		{
+			zoom = (w) / (gameWith * 1);
+			Hzoom = (h) / (gameHeigth * 1);
+			zoom = min(zoom, Hzoom);
+		}else
+		{
+			zoom = min(zoom, Hzoom);
+		}
+
+
+		zoom = min(zoom, 3);
+		zoom = max(zoom, 0.1);
+
+		renderer.currentCamera.zoom = zoom;
+		//renderer.currentCamera.zoom = platform::getPlayerMovement(0).y * 1 + 1;
+		std::cout << renderer.currentCamera.zoom << "\n";
+	}
+	
+#pragma endregion
+
+	
+	
 	//renderer.currentCamera.position.y += platform::getPlayerMovement(0).y * deltaTime * -200;
 	//renderer.currentCamera.position.x += platform::getPlayerMovement(0).x * deltaTime * 200;
 
