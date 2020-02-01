@@ -22,9 +22,9 @@ glm::vec4 Animate::getTexturePos()
 
 	glm::vec4 tCoord;
 	tCoord.x = scale.x * posX;
-	tCoord.y = scale.y * posY;
+	tCoord.y = scale.y * (h - posY);
 	tCoord.z = scale.x * (posX + 1);
-	tCoord.w = scale.y * (posY + 1);
+	tCoord.w = scale.y * (h - posY-1);
 
 	return tCoord;
 }
