@@ -187,24 +187,31 @@ namespace gl2d
 
 	glm::vec2 scaleAroundPoint(glm::vec2 vec, glm::vec2 point, float scale)
 	{
-		//vec.x = vec.x - point.x;
-		//vec.y = vec.y - point.y;
+	
+		vec = (vec - point) * scale + point;
 
-		vec.x = vec.x * scale;
-		vec.y = vec.y * scale;
+		//vec.x = vec.x * scale;
+		//vec.y = vec.y * scale;
+		//
+		//glm::vec2 move = point - (point * scale);
+		//
+		//vec += move;
 
-		if (scale > 1)
-		{
-			scale = scale - 1;
-		}
-		else
-		{
-			scale = scale - 1;
-		}
-
-		vec.x = vec.x + point.x * scale;
-		vec.y = vec.y + point.y * scale;
-
+		//vec.x = vec.x * scale;
+		//vec.y = vec.y * scale;
+		//
+		//if (scale > 1)
+		//{
+		//	scale = scale - 1;
+		//}
+		//else
+		//{
+		//	scale = scale - 1;
+		//}
+		//
+		//vec.x = vec.x + point.x * scale;
+		//vec.y = vec.y + point.y * scale;
+		//
 		return vec;
 	}
 
@@ -491,9 +498,12 @@ namespace gl2d
 		//Apply camera zoom
 		//if(renderer->currentCamera.zoom != 1)
 		{
+			
 			glm::vec2 cameraCenter;
-			cameraCenter.x = -currentCamera.position.x;
-			cameraCenter.y = currentCamera.position.y;
+			cameraCenter.x = windowW / 2.0f;
+			cameraCenter.y = -windowH / 2.0f;
+
+			std::cout << cameraCenter.x << "\n";
 
 			v1 = scaleAroundPoint(v1, cameraCenter, currentCamera.zoom);
 			v2 = scaleAroundPoint(v2, cameraCenter, currentCamera.zoom);
