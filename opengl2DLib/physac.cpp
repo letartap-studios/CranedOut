@@ -120,6 +120,12 @@ static void Mat2Set(Mat2* matrix, float radians);                               
 static inline Mat2 Mat2Transpose(Mat2 matrix);                                                              // Returns the transpose of a given matrix 2x2
 static inline Vector2 Mat2MultiplyVector2(Mat2 matrix, Vector2 vector);                                     // Multiplies a vector by a matrix 2x2
 
+
+Vector2 getGravity()
+{
+    return gravityForce;
+}
+
 //----------------------------------------------------------------------------------
 // Module Functions Definition
 //----------------------------------------------------------------------------------

@@ -3,6 +3,8 @@
 #include <sstream>
 #include <Windows.h>
 #include "Animate.h"
+#include "Rectangle.h"
+#include <algorithm>
 
 gl2d::Font f;
 gl2d::Texture floorTexture;
@@ -10,12 +12,26 @@ gl2d::Texture gearTexture;
 gl2d::Texture animTexture;
 gl2d::Texture backgroundTexture;
 Animate anim;
+bool pickedUp = false;
+
+
+RectangleBody podea, cub, crane;
 
 bool initGame(gl2d::Renderer2D &renderer)
 {
 	f.createFromFile("roboto_black.ttf");
 	floorTexture.loadFromFile("floor.png");
 	gearTexture.loadFromFile("gear.png");
+
+	InitPhysics();
+
+	podea.Create(0, 600, 1000, 100, 0.1);
+	podea.body->enabled = false;
+
+	cub.Create(50, 200, 100, 100, 0.1);
+	crane.Create(150, 0, 20, 20, 0.1, 3000);
+	SetPhysicsGravity(0, 1);
+	
 	animTexture.loadFromFile("rotita.png");
 	backgroundTexture.loadFromFile("background.png");
 
@@ -34,6 +50,11 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 {
 	renderer.clearScreen();
 
+	float velocity = -0.8 * deltaTime;
+
+	
+	RunPhysicsStep();
+	
 #pragma region determinePlacement
 	renderer.currentCamera.position.y = (gameHeigth - h) / 2.f;
 	renderer.currentCamera.position.x = (gameWith - w) / 2.f;
@@ -134,6 +155,65 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 	renderer.renderRectangle({ players[0].x - playerSize / 2, players[0].y - playerSize / 2 , playerSize , playerSize }, {}, 0, animTexture, anim.getTexturePos());
 	renderer.renderRectangle({ players[1].x - playerSize / 2, players[1].y - playerSize / 2 , playerSize , playerSize }, {}, 0, gearTexture);
 
+	float wireLength0 = glm::distance(crane.getPos(), players[0]);
+	float wireLength1 = glm::distance(crane.getPos(), players[1]);
+	//auto wireLength = sqrt(pow(static_cast<float>(crane.body->position.x - players[0].x), 2) - pow(static_cast<float>(crane.body->position.y - players[0].y),2));
+	float clampValue = 0.15;
+
+	if (wireLength0 >= -35 && wireLength0 <= -40)
+	{
+		crane.body->velocity.y = -getGravity().y * deltaTime;
+	}
+	
+	if(wireLength0 > 300)
+	{
+		PhysicsAddForce(crane.body, {(crane.getPos().x - players[0].x) * velocity, (crane.getPos().y - players[0].y) * velocity });
+		PhysicsAddForce(crane.body, {(crane.getPos().x - players[1].x) * velocity, (crane.getPos().y - players[1].y) * velocity });
+		//crane.body->velocity = { (crane.body->position.x - players[0].x) * velocity, (crane.body->position.y - players[0].y) * velocity };
+
+	}
+
+	if (crane.body->velocity.x < 0)
+	{
+		crane.body->velocity.x = max(crane.body->velocity.x, -clampValue);
+	}
+	if (crane.body->velocity.y < 0)
+	{
+		crane.body->velocity.y = max(crane.body->velocity.y, -clampValue);
+	}
+
+	if (crane.body->velocity.x > 0)
+	{
+		crane.body->velocity.x = min(crane.body->velocity.x, clampValue);
+	}
+	if (crane.body->velocity.y > 0)
+	{
+		crane.body->velocity.y = min(crane.body->velocity.y, clampValue);
+	}
+
+	std::cout<<crane.body->velocity.y<< std::endl;
+	if (cub.PointCollision(crane.getPos()))
+	{
+		if(platform::isKeyPressed(VK_SPACE))
+		{
+			if(pickedUp == false)
+			{
+				glm::vec2 temp = crane.getPos() - glm::vec2{ cub.body->position.x, cub.body->position.y };
+				pickedUp = true;
+			}
+			cub.body->useGravity = false;
+			cub.body->position.x = crane.getPos().x;
+			cub.body->position.y = crane.getPos().y;
+		}
+		else
+		{
+			cub.body->useGravity = true;
+			pickedUp = false;
+			//	cub.body->enabled = true;
+		}
+		
+	}
+	
 #pragma endregion
 
 #pragma region map
@@ -153,7 +233,11 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 	//renderer.render9Patch2({ -100,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
 	//renderer.render9Patch2({ gameWith ,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
 #pragma endregion
+	podea.Draw(Colors_Red, renderer);
+	cub.Draw(Colors_Magenta, renderer);
+	crane.Draw(gearTexture, renderer);
 
+	
 	renderer.flush();
 
 	return true;
