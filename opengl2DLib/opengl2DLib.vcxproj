@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animate.cpp" />
     <ClCompile Include="gameLayer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="opengl2Dlib.cpp" />
@@ -29,6 +30,7 @@
     <ClCompile Include="windowsPlatformLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animate.h" />
     <ClInclude Include="gameLayer.h" />
     <ClInclude Include="opengl2Dlib.h" />
     <ClInclude Include="physac.h" />

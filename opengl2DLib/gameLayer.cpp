@@ -2,18 +2,23 @@
 #include "windowsPlatformLayer.h"
 #include <sstream>
 #include <Windows.h>
-
+#include "Animate.h"
 
 gl2d::Font f;
 gl2d::Texture floorTexture;
 gl2d::Texture gearTexture;
+gl2d::Texture animTexture;
+Animate anim;
 
 bool initGame(gl2d::Renderer2D &renderer)
 {
 	f.createFromFile("roboto_black.ttf");
 	floorTexture.loadFromFile("floor.png");
 	gearTexture.loadFromFile("gear.png");
-	
+	animTexture.loadFromFile("rotita.png");
+
+	anim.create(4, 1, 50, animTexture);
+
 	return true;
 }
 
@@ -106,7 +111,8 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 		}
 	}
 
-	renderer.renderRectangle({ players[0].x - playerSize / 2, players[0].y - playerSize / 2 , playerSize , playerSize }, {}, 0, gearTexture);
+	anim.updateTime(deltaTime * 1000);
+	renderer.renderRectangle({ players[0].x - playerSize / 2, players[0].y - playerSize / 2 , playerSize , playerSize }, {}, 0, animTexture, anim.getTexturePos());
 	renderer.renderRectangle({ players[1].x - playerSize / 2, players[1].y - playerSize / 2 , playerSize , playerSize }, {}, 0, gearTexture);
 
 #pragma endregion
