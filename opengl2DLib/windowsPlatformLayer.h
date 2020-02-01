@@ -63,6 +63,8 @@ namespace platform
 	glm::vec2 getPlayerMovement(int id);
 	bool playerPressesAButton(int id);
 
+	int getPlayerResizeString(int id);
+
 	void vibrate(int id, short l, short r);
 	void vibrateBoth(short l, short r);
 

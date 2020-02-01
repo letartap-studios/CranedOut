@@ -13,9 +13,13 @@ gl2d::Texture gearTexture;
 gl2d::Texture animTexture;
 gl2d::Texture backgroundTexture;
 gl2d::Texture stringTexture;
-Animate anim;
+gl2d::Texture macara;
+
+Animate playerAnim[2];
 bool pickedUp = false;
 glm::vec2 tempPadding;
+
+Animate macaraAnim;
 
 RectangleBody podea, crane;
 std::vector<RectangleBody> bodies;
@@ -23,12 +27,17 @@ std::vector<RectangleBody> bodies;
 int gameWith = 800;
 int gameHeigth = 700;
 
+float vibrateTime = 0;
+
 bool initGame(gl2d::Renderer2D &renderer)
 {
 	f.createFromFile("roboto_black.ttf");
 	floorTexture.loadFromFile("floor.png");
 	gearTexture.loadFromFile("gear.png");
 	stringTexture.loadFromFile("string.png");
+	macara.loadFromFile("animal_macara.png");
+
+	macaraAnim.create(1, 4, 0, macara);
 
 	InitPhysics();
 
@@ -37,18 +46,21 @@ bool initGame(gl2d::Renderer2D &renderer)
 
 	//cub.Create(50, 200, 100, 100, 0.1);
 
-	bodies.push_back({ 50, 200, 30, 30, 0.1 });
-	bodies.push_back({ 50, 300, 30, 30, 0.1 });
-	bodies.push_back({ 50, 400, 30, 30, 0.2 });
-	bodies.push_back({50, 500, 30, 30, 0.2});
+	bodies.push_back({ 50, 200, 50, 50, 0.1 });
+	bodies.push_back({ 50, 300, 50, 50, 0.1 });
+	bodies.push_back({ 50, 400, 50, 50, 0.2 });
+	bodies.push_back({50, 500, 50, 50, 0.2});
 
-	crane.Create(150, 0, 20, 20, 10, 3000);
+	crane.Create(150, 0, 45, 45, 10, 4000);
+	crane.body->freezeOrient = true;
+
 	SetPhysicsGravity(0, 1);
-	
+
 	animTexture.loadFromFile("rotita.png");
 	backgroundTexture.loadFromFile("background.png");
 
-	anim.create(4, 1, 50, animTexture);
+	playerAnim[0].create(4, 1, 50, animTexture);
+	playerAnim[1].create(4, 1, 50, animTexture);
 
 	return true;
 }
@@ -57,14 +69,18 @@ bool initGame(gl2d::Renderer2D &renderer)
 glm::vec2 players[2] = { {100, 100}, {400, 100} };
 int playerSize = 40;
 
-int wireSize[2] = { 100, 100 };
+const int wireSizeMaxEnarge = 300;
+const int wireSizeMinEnarge = 50;
+
+float wireSize[2] = { 250, 250 };
 int maxWireSize = 600;
+float clampValue = 0.2;
 
 bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platform::Window &wind)
 {
 	renderer.clearScreen();
 
-	float velocity = -2.0 * deltaTime;
+	float velocity = -1.0 * deltaTime;
 
 	RunPhysicsStep();
 	
@@ -139,6 +155,43 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 	
 #pragma region player
 
+	{
+		float modify[2] = {};
+
+		if(vibrateTime)
+		{
+			platform::vibrateBoth(60000, 60000);
+			vibrateTime -= deltaTime;
+			if(vibrateTime < 0)
+			{
+				vibrateTime = 0;
+				platform::vibrateBoth(0, 0);
+			}
+		}
+
+		for (int i = 0; i < 2; i++)
+		{
+			modify[i] = platform::getPlayerResizeString(i);
+
+			modify[i] *= deltaTime * 100;
+
+			wireSize[i] += modify[i];
+
+			wireSize[i] = max(wireSize[i], wireSizeMinEnarge);
+			wireSize[i] = min(wireSize[i], wireSizeMaxEnarge);
+
+		}
+
+		bool l = modify[0] != 0;
+		bool r = modify[1] != 0;
+		
+		if(l)playerAnim[0].updateTime(deltaTime * 1000);
+		if(r)playerAnim[1].updateTime(deltaTime * 1000);
+
+		platform::vibrateBoth(12000 * l, 12000 * r);
+
+	}
+
 	players[0] += platform::getPlayerMovement(0) * deltaTime * 200.f;
 	players[1] += platform::getPlayerMovement(1) * deltaTime * 200.f;
 
@@ -165,9 +218,8 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 		}
 	}
 
-	anim.updateTime(deltaTime * 1000);
-	renderer.renderRectangle({ players[0].x - playerSize / 2, players[0].y - playerSize / 2 , playerSize , playerSize }, Colors_Blue, {}, 0, animTexture, anim.getTexturePos());
-	renderer.renderRectangle({ players[1].x - playerSize / 2, players[1].y - playerSize / 2 , playerSize , playerSize }, Colors_Red, {}, 0, animTexture, anim.getTexturePos());
+	renderer.renderRectangle({ players[0].x - playerSize / 2, players[0].y - playerSize / 2 , playerSize , playerSize }, Colors_Blue, {}, 0, playerAnim[0].texture, playerAnim[0].getTexturePos());
+	renderer.renderRectangle({ players[1].x - playerSize / 2, players[1].y - playerSize / 2 , playerSize , playerSize }, Colors_Red, {}, 0, playerAnim[1].texture, playerAnim[1].getTexturePos());
 
 	float wireLength[2];
 	for(int i=0; i<2; i++)
@@ -175,8 +227,9 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 		wireLength[i] = glm::distance(crane.getPos(), players[i]);
 	}
 
+#pragma region crane
+
 	//auto wireLength = sqrt(pow(static_cast<float>(crane.body->position.x - players[0].x), 2) - pow(static_cast<float>(crane.body->position.y - players[0].y),2));
-	float clampValue = 0.3;
 
 	for(int i=0;i<2;i++)
 	{
@@ -188,7 +241,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 
 		if (wireLength[i] > wireSize[i])
 		{
-			float magnifier = (wireLength[i] - wireSize[i]) / 50.f;
+			float magnifier = (wireLength[i] - wireSize[i]) / 5.f;
 			PhysicsAddForce(crane.body, { (crane.getPos().x - players[i].x) * velocity * magnifier, (crane.getPos().y - players[i].y) * velocity * magnifier });
 			//crane.body->velocity = { (crane.body->position.x - players[0].x) * velocity, (crane.body->position.y - players[0].y) * velocity };
 			
@@ -221,7 +274,28 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 		crane.body->velocity.y = min(crane.body->velocity.y, clampValue);
 	}
 
-	std::cout<<crane.body->velocity.y<< std::endl;
+	if(crane.getPos().y > gameHeigth)
+	{ 
+		crane.setPos({ crane.getPos().x ,gameHeigth });
+	}
+
+#pragma endregion
+
+	if(platform::playerPressesAButton(0) && platform::playerPressesAButton(1))
+	{
+		
+		macaraAnim.posY = 1;
+	}else if (platform::playerPressesAButton(0))
+	{
+		macaraAnim.posY = 3;
+	}else if (platform::playerPressesAButton(1))
+	{
+		macaraAnim.posY = 2;
+	}else
+	{
+		macaraAnim.posY = 0;
+	}
+
 	bool anyPickedUp = 0;
 	for(auto &cub :bodies)
 	{
@@ -232,6 +306,8 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 				anyPickedUp = true;
 				if (pickedUp == false)
 				{
+					vibrateTime = 0.2;
+
 					tempPadding = crane.getPos() - glm::vec2{ cub.body->position.x, cub.body->position.y };
 					pickedUp = true;
 				}
@@ -262,9 +338,10 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 #pragma region render strings
 
 	{
-		const int elements = 30;
 		for (int i = 0; i < 2; i++)
 		{
+			const int elements = 25 * ( ((float)wireSize[i] - (float)wireSizeMinEnarge) / ((float)wireSizeMaxEnarge - (float)wireSizeMinEnarge) ) + 5;
+
 			glm::vec2 vecDir = crane.getPos() - players[i];
 			glm::vec2 drawPos = players[i];
 
@@ -281,8 +358,25 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 
 #pragma endregion
 
+#pragma region remove blocks
 
-#pragma region map
+	for(int i=0; i< bodies.size(); i++)
+	{
+	
+		if(bodies[i].body->position.y > gameHeigth + 500)
+		{
+			DestroyPhysicsBody(bodies[i].body);
+			bodies.erase(bodies.begin() + i);
+			i--;
+		}
+		
+	}
+
+#pragma endregion
+
+
+
+#pragma region draw map
 
 	for(int i=0; i<=gameHeigth/100; i++)
 	{
@@ -306,7 +400,8 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 		cub.Draw(Colors_Magenta, renderer);
 	}
 
-	crane.Draw(gearTexture, renderer);
+
+	crane.Draw(macaraAnim.texture, renderer, macaraAnim.getTexturePos());
 
 	
 	renderer.flush();

@@ -224,9 +224,9 @@ namespace platform
 		
 	}
 
-	const int keyBindings[2][5] = 
-	{ {'W', 'A', 'S', 'D', VK_SPACE},
-	{VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_RETURN }
+	const int keyBindings[2][7] = 
+	{ {'W', 'A', 'S', 'D', VK_SPACE, 'Q', 'E'},
+	{'I', 'J', 'K', 'L', VK_RETURN, 'U', 'O' }
 	};
 
 	glm::vec2 getPlayerMovement(int id)
@@ -316,6 +316,42 @@ namespace platform
 		}
 
 		return false;
+	}
+
+	int getPlayerResizeString(int id)
+	{
+		if (id > 1)
+		{
+			return {};
+		}
+		int i = id;
+		XINPUT_STATE s;
+
+		if (DynamicXinputGetState != nullptr && DynamicXinputGetState(i, &s) == ERROR_SUCCESS)
+		{
+			XINPUT_GAMEPAD *pad = &s.Gamepad;
+
+			bool l = pad->bLeftTrigger;
+			bool r = pad->bRightTrigger;
+
+			if (l&r) { return 0; }
+			if (l) { return 1; }
+			if (r) { return -1; }
+			return 0;
+		}
+		else
+		{
+			bool l = (isKeyPressed(keyBindings[i][5]));
+			bool r = (isKeyPressed(keyBindings[i][6]));
+
+			if (l&r) { return 0; }
+			if (l) { return 1; }
+			if (r) { return -1; }
+			return 0;
+
+		}
+
+		return 0;
 	}
 
 	void vibrateBoth(short l, short r)
