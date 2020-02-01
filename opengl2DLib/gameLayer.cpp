@@ -62,10 +62,10 @@ bool initGame(gl2d::Renderer2D& renderer)
 	bodies.push_back({ 50, 500, 50, 50, 0.2 });
 	bodies.push_back({ 250, 500, 100, 50, 0.2 });
 
-	crane.Create(150, 0, 50, 50, 10, 4000);
+	crane.Create(150, 0, 50, 50, 4, 4000);
 	crane.body->freezeOrient = true;
 
-	SetPhysicsGravity(0, 2);
+	//SetPhysicsGravity(0, 3);
 
 	animTexture.loadFromFile("rotita.png");
 	backgroundTexture.loadFromFile("zi.png");
@@ -97,14 +97,14 @@ float wireSize[2] = { 250, 250 };
 int maxWireSize = 600;
 float clampValue = 0.2;
 
-bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platform::Window& wind)
+bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer,  int w,  int h,  platform::Window& wind)
 {
 
 	//rf_update_long_audio_stream(music);
 
 	renderer.clearScreen();
 
-	float velocity = -1.0 * deltaTime;
+	float velocity = -1 * deltaTime;
 
 	RunPhysicsStep();
 
@@ -156,8 +156,8 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 #pragma region background
 
 	{
-		int xSize = backgroundTexture.GetSize().x*1.4;
-		int ySize = backgroundTexture.GetSize().y*1.4;
+		int xSize = backgroundTexture.GetSize().x * 1.4;
+		int ySize = backgroundTexture.GetSize().y * 1.4;
 
 		glm::vec2 pos = renderer.currentCamera.position;
 
@@ -282,7 +282,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 
 		if (wireLength[i] > wireSize[i])
 		{
-			float magnifier = (wireLength[i] - wireSize[i]) / 5.f;
+			float magnifier = (wireLength[i] - wireSize[i]) / 2.f;
 			PhysicsAddForce(crane.body, { (crane.getPos().x - players[i].x) * velocity * magnifier, (crane.getPos().y - players[i].y) * velocity * magnifier });
 			//crane.body->velocity = { (crane.body->position.x - players[0].x) * velocity, (crane.body->position.y - players[0].y) * velocity };
 
@@ -394,7 +394,15 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 		}
 
 	}
+	for (int i = 0; i < bodies.size(); i++)
+	{
 
+		bodies[i].body->velocity.x *= 0.8f;
+		bodies[i].body->velocity.y *= 0.8f;
+
+	}
+
+	
 #pragma endregion
 
 
@@ -434,7 +442,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 	{
 		for (int i = 0; i < 2; i++)
 		{
-			const int elements = 25 * (((float)wireSize[i] - (float)wireSizeMinEnarge) / ((float)wireSizeMaxEnarge - (float)wireSizeMinEnarge)) + 5;
+			const int elements = 20 * (((float)wireSize[i] - (float)wireSizeMinEnarge) / ((float)wireSizeMaxEnarge - (float)wireSizeMinEnarge)) + 10;
 
 			glm::vec2 vecDir = crane.getPos() - players[i];
 			glm::vec2 drawPos = players[i];
