@@ -250,7 +250,7 @@ namespace platform
 				retValY = 0.f;
 			}
 
-			return { retValX, retValY };
+			return { retValX, -retValY };
 			//bool UP = (pad->wButtons & XINPUT_GAMEPAD_DPAD_UP);
 			//return (float)UP;
 		}else
@@ -278,11 +278,12 @@ namespace platform
 				retValX += 1;
 			}
 
-			return{ retValX, retValY };
+			return{ retValX, -retValY };
 		
 		}
 	}
 
+	//deprecated probably
 	glm::vec2 joyStick()
 	{
 		if (DynamicXinputGetState != nullptr)
