@@ -25,6 +25,7 @@
 *       jar_mod.h    - MOD audio file loading
 **********************************************************************************************/
 
+
 //For development purposes, these defines are only seen by CLion and are used to enable all the code in the IDE and check for errors
 #ifdef __JETBRAINS_IDE__
 #define RF_AUDIO_IMPL
@@ -1334,7 +1335,7 @@ extern rf_long_audio_stream rf_load_long_audio_stream(const char* filename)
         drmp3* ctxMp3 = (drmp3*)RF_MALLOC(sizeof(drmp3));
         long_audio_stream.ctx_data = ctxMp3;
 
-        int result = drmp3_init_file(ctxMp3, filename, NULL, NULL);
+        int result = drmp3_init_file(ctxMp3, filename, NULL);
 
         if (result > 0)
         {
