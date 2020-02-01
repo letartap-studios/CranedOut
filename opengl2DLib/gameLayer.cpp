@@ -8,6 +8,7 @@ gl2d::Font f;
 gl2d::Texture floorTexture;
 gl2d::Texture gearTexture;
 gl2d::Texture animTexture;
+gl2d::Texture backgroundTexture;
 Animate anim;
 
 bool initGame(gl2d::Renderer2D &renderer)
@@ -16,6 +17,7 @@ bool initGame(gl2d::Renderer2D &renderer)
 	floorTexture.loadFromFile("floor.png");
 	gearTexture.loadFromFile("gear.png");
 	animTexture.loadFromFile("rotita.png");
+	backgroundTexture.loadFromFile("background.png");
 
 	anim.create(4, 1, 50, animTexture);
 
@@ -76,7 +78,24 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 	
 #pragma endregion
 
-	
+#pragma region background
+
+	{
+		int xSize = backgroundTexture.GetSize().x;
+		int ySize = backgroundTexture.GetSize().y;
+		
+		glm::vec2 pos = renderer.currentCamera.position;
+
+		//pos.x += xSize / 2;
+		//pos.y += ySize / 2;
+
+		float darkness = ((sin(GetTickCount() / 1000.f) + 1) / 2.f) / 2.f + 0.2f;
+
+		renderer.renderRectangle({ pos.x, pos.y, xSize, ySize }, { darkness,darkness,darkness,1}, {}, 0, backgroundTexture);
+		
+	}
+
+#pragma endregion
 	
 	//renderer.currentCamera.position.y += platform::getPlayerMovement(0).y * deltaTime * -200;
 	//renderer.currentCamera.position.x += platform::getPlayerMovement(0).x * deltaTime * 200;
@@ -118,9 +137,21 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 #pragma endregion
 
 #pragma region map
-	renderer.render9Patch2({ 0, gameHeigth, gameWith, 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
-	renderer.render9Patch2({ -100,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
-	renderer.render9Patch2({ gameWith ,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
+
+	for(int i=0; i<=gameHeigth/100; i++)
+	{
+		renderer.renderRectangle({ -100, i * 100, 100, 100 }, {}, 0, floorTexture);
+		renderer.renderRectangle({ gameWith ,i * 100 , 100, 100 }, {}, 0, floorTexture);
+	}
+
+	for(int i=0; i<gameWith/100;i++)
+	{
+		renderer.renderRectangle({ i * 100, gameHeigth, 100, 100}, {}, 0, floorTexture);
+	}
+
+	//renderer.render9Patch2({ 0, gameHeigth, gameWith, 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
+	//renderer.render9Patch2({ -100,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
+	//renderer.render9Patch2({ gameWith ,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
 #pragma endregion
 
 	renderer.flush();
