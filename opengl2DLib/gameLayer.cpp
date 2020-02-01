@@ -5,6 +5,7 @@
 #include "Animate.h"
 #include "Rectangle.h"
 #include <algorithm>
+#include <vector>
 
 gl2d::Font f;
 gl2d::Texture floorTexture;
@@ -16,7 +17,8 @@ Animate anim;
 bool pickedUp = false;
 glm::vec2 tempPadding;
 
-RectangleBody podea, cub, crane;
+RectangleBody podea, crane;
+std::vector<RectangleBody> bodies;
 
 int gameWith = 800;
 int gameHeigth = 700;
@@ -30,12 +32,18 @@ bool initGame(gl2d::Renderer2D &renderer)
 
 	InitPhysics();
 
-	podea.Create(0 + gameWith/2, gameHeigth + 400 /2, gameWith, 400, 0.1);
+	podea.Create(0 + gameWith / 2, gameHeigth + 400 / 2, gameWith, 400, 0.1);
 	podea.body->enabled = false;
 
-	cub.Create(50, 200, 100, 100, 0.1);
+	//cub.Create(50, 200, 100, 100, 0.1);
+
+	bodies.push_back({ 50, 200, 30, 30, 0.1 });
+	bodies.push_back({ 50, 300, 30, 30, 0.1 });
+	bodies.push_back({ 50, 400, 30, 30, 0.2 });
+	bodies.push_back({50, 500, 30, 30, 0.2});
+
 	crane.Create(150, 0, 20, 20, 10, 3000);
-	SetPhysicsGravity(0, 2);
+	SetPhysicsGravity(0, 1);
 	
 	animTexture.loadFromFile("rotita.png");
 	backgroundTexture.loadFromFile("background.png");
@@ -117,7 +125,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 
 		float darkness = ((sin(GetTickCount() / 1000.f) + 1) / 2.f) / 2.f + 0.2f;
 
-		renderer.renderRectangle({ pos.x, pos.y, xSize, ySize }, { darkness,darkness,darkness,1}, {}, 0, backgroundTexture);
+		renderer.renderRectangle({ pos.x, pos.y, xSize, ySize }, { darkness,darkness,darkness,1 }, {}, 0, backgroundTexture);
 		
 	}
 
@@ -158,8 +166,8 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 	}
 
 	anim.updateTime(deltaTime * 1000);
-	renderer.renderRectangle({ players[0].x - playerSize / 2, players[0].y - playerSize / 2 , playerSize , playerSize }, {}, 0, animTexture, anim.getTexturePos());
-	renderer.renderRectangle({ players[1].x - playerSize / 2, players[1].y - playerSize / 2 , playerSize , playerSize }, {}, 0, gearTexture);
+	renderer.renderRectangle({ players[0].x - playerSize / 2, players[0].y - playerSize / 2 , playerSize , playerSize }, Colors_Blue, {}, 0, animTexture, anim.getTexturePos());
+	renderer.renderRectangle({ players[1].x - playerSize / 2, players[1].y - playerSize / 2 , playerSize , playerSize }, Colors_Red, {}, 0, animTexture, anim.getTexturePos());
 
 	float wireLength[2];
 	for(int i=0; i<2; i++)
@@ -214,32 +222,39 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 	}
 
 	std::cout<<crane.body->velocity.y<< std::endl;
-	if (cub.PointCollision(crane.getPos()))
+	bool anyPickedUp = 0;
+	for(auto &cub :bodies)
 	{
-		if(platform::isKeyPressed(VK_SPACE))
+		if (cub.PointCollision(crane.getPos()))
 		{
-			if(pickedUp == false)
+			if (platform::playerPressesAButton(0) && platform::playerPressesAButton(1))
 			{
-				tempPadding = crane.getPos() - glm::vec2{ cub.body->position.x, cub.body->position.y };
-				pickedUp = true;
+				anyPickedUp = true;
+				if (pickedUp == false)
+				{
+					tempPadding = crane.getPos() - glm::vec2{ cub.body->position.x, cub.body->position.y };
+					pickedUp = true;
+				}
+				cub.body->useGravity = false;
+				cub.body->position.x = crane.getPos().x - tempPadding.x;
+				cub.body->position.y = crane.getPos().y - tempPadding.y;
 			}
-			cub.body->useGravity = false;
-			cub.body->position.x = crane.getPos().x - tempPadding.x;
-			cub.body->position.y = crane.getPos().y - tempPadding.y;
+			else
+			{
+				cub.body->useGravity = true;
+				//	cub.body->enabled = true;
+			}
+
 		}
 		else
 		{
 			cub.body->useGravity = true;
-			pickedUp = false;
 			//	cub.body->enabled = true;
 		}
-		
 	}
-	else
+	if(anyPickedUp == false)
 	{
-		cub.body->useGravity = true;
 		pickedUp = false;
-		//	cub.body->enabled = true;
 	}
 	
 #pragma endregion
@@ -285,7 +300,12 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 	//renderer.render9Patch2({ gameWith ,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
 #pragma endregion
 	//podea.Draw(Colors_Red, renderer);
-	cub.Draw(Colors_Magenta, renderer);
+	
+	for(auto &cub: bodies)
+	{
+		cub.Draw(Colors_Magenta, renderer);
+	}
+
 	crane.Draw(gearTexture, renderer);
 
 	

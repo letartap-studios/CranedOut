@@ -1,4 +1,5 @@
 #include "windowsPlatformLayer.h"
+#include <iostream>
 
 const char *windClassAtom = "fereastra";
 bool bShouldClose = false;
@@ -8,6 +9,8 @@ namespace platform
 {
 	typedef DWORD WINAPI XInputGetState_t(DWORD dwUserIndex, XINPUT_STATE* pState);
 	static XInputGetState_t *DynamicXinputGetState;
+	typedef DWORD WINAPI XInputSetState_t(DWORD dwUserIndex, XINPUT_VIBRATION* pState);
+	static XInputSetState_t *DynamicXinputSetState;
 	bool xInputLoaded = 0;
 
 	namespace internal
@@ -141,7 +144,7 @@ namespace platform
 
 	}
 
-	void Window::handleEvents(int count)
+	void Window::handleEvents()
 	{
 		MSG msg = {};
 
@@ -150,27 +153,11 @@ namespace platform
 		leftReleased = 0;
 		rightReleased = 0;
 
-		if (count != 0)
+		while (PeekMessage(&msg, handle, 0, 0, PM_REMOVE))
 		{
-			int i = 0;
-			while (PeekMessage(&msg, handle, 0, 0, PM_REMOVE))
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-				i++;
-				if (i > count)break;
-
-			}
-		}else
-		{
-			while (PeekMessage(&msg, handle, 0, 0, PM_REMOVE))
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-		}
-
-		
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}	
 		
 	}
 
@@ -230,15 +217,16 @@ namespace platform
 
 		{
 			DynamicXinputGetState = (XInputGetState_t*)GetProcAddress(xinputLib, "XInputGetState");
+			DynamicXinputSetState = (XInputSetState_t*)GetProcAddress(xinputLib, "XInputSetState");
 			xInputLoaded = 1;
 		}
-
+	
 		
 	}
 
-	const int keyBindings[2][4] = 
-	{ {'W', 'A', 'S', 'D'},
-	{VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT }
+	const int keyBindings[2][5] = 
+	{ {'W', 'A', 'S', 'D', VK_SPACE},
+	{VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_RETURN }
 	};
 
 	glm::vec2 getPlayerMovement(int id)
@@ -305,6 +293,51 @@ namespace platform
 			return{ retValX, -retValY };
 		
 		}
+	}
+
+	bool playerPressesAButton(int id)
+	{
+		if (id > 1)
+		{
+			return {};
+		}
+		int i = id;
+		XINPUT_STATE s;
+
+		if (DynamicXinputGetState != nullptr && DynamicXinputGetState(i, &s) == ERROR_SUCCESS)
+		{
+			XINPUT_GAMEPAD *pad = &s.Gamepad;
+
+			bool a = (pad->wButtons & XINPUT_GAMEPAD_A);
+			return a;
+		}else
+		{
+			return isKeyPressed(keyBindings[i][4]);
+		}
+
+		return false;
+	}
+
+	void vibrateBoth(short l, short r)
+	{
+		vibrate(0, l, r);
+		vibrate(1, l, r);
+	}
+
+	void vibrate(int id, short l, short r)
+	{
+		if (id > 1 || DynamicXinputSetState == nullptr)
+		{
+			return;
+		}
+		int i = id;
+
+		XINPUT_VIBRATION vibration;
+		ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
+		vibration.wLeftMotorSpeed = l; // use any value between 0-65535 here
+		vibration.wRightMotorSpeed = r; // use any value between 0-65535 here
+		DynamicXinputSetState(i, &vibration);
+
 	}
 
 	//deprecated probably

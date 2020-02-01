@@ -29,7 +29,7 @@ namespace platform
 		void swapBuffers();
 
 		void create(int w, int h, const char* title);
-		void handleEvents(int count);
+		void handleEvents();
 		void enableOpengl();
 
 		bool isLeftMouseButtonHeld();
@@ -61,6 +61,11 @@ namespace platform
 
 	glm::vec2 joyStick();
 	glm::vec2 getPlayerMovement(int id);
+	bool playerPressesAButton(int id);
+
+	void vibrate(int id, short l, short r);
+	void vibrateBoth(short l, short r);
+
 
 	bool shouldClose();
 };
