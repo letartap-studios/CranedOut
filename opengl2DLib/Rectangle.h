@@ -12,31 +12,39 @@ struct RectangleBody
 	PhysicsBody body = 0;
 	float width, height;
 
+	float yPadding = 0;
+	
 	RectangleBody() = default;
 
-	RectangleBody(const float xPos, const float yPos, const float width, const float height, const float density)
+	RectangleBody(const float xPos, const float yPos, const float width, const float height, const float density, int padd = 0)
 	{
-		Create(xPos, yPos, width, height, density);
+		Create(xPos, yPos, width, height, density, padd);
+	}
+
+	glm::vec2 getPos() const
+	{
+		return { body->position.x, body->position.y - yPadding };
 	}
 	
-	void Create(const float xPos, const float yPos, const float width, const float height, const float density)
+	void Create(const float xPos, const float yPos, const float width, const float height, const float density, int padd = 0)
 	{
+		yPadding = padd;
 		this->width = width;
 		this->height = height;
 		
-		body = CreatePhysicsBodyRectangle({ xPos,yPos }, width, height, density);
+		body = CreatePhysicsBodyRectangle({ xPos,yPos + padd}, width, height, density);
 	}
 
 	void Draw(const gl2d::Texture texture, gl2d::Renderer2D& renderer) const
 	{
 		if(body)
-			renderer.renderRectangle({ body->position.x - width / 2, body->position.y - height / 2, width, height }, { 0,0 }, glm::degrees(-body->orient), texture);
+			renderer.renderRectangle({ body->position.x - width / 2, getPos().y - height / 2, width, height }, { 0,0 }, glm::degrees(-body->orient), texture);
 	}
 
 	void Draw( const gl2d::Color4f color, gl2d::Renderer2D& renderer) const
 	{
 		if (body)
-			renderer.renderRectangle({ body->position.x - width/2, body->position.y - height/2, width, height }, color, { 0,0 }, glm::degrees(-body->orient));
+			renderer.renderRectangle({ body->position.x - width/2, getPos().y - height/2, width, height }, color, { 0,0 }, glm::degrees(-body->orient));
 	}
 
 	float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
@@ -55,7 +63,7 @@ struct RectangleBody
 		return ((b1 == b2) && (b2 == b3));
 	}
 	
-	bool MouseCollision(glm::vec2 pos)
+	bool PointCollision(glm::vec2 pos)
 	{
 		glm::vec2 colt[4];
 
