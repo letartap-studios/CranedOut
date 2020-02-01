@@ -9,6 +9,8 @@
 gl2d::Font f;
 gl2d::Texture floorTexture;
 gl2d::Texture gearTexture;
+bool pickedUp = false;
+
 
 RectangleBody podea, cub, crane;
 
@@ -162,21 +164,30 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 	{
 		crane.body->velocity.y = min(crane.body->velocity.y, clampValue);
 	}
-	
+
 	std::cout<<crane.body->velocity.y<< std::endl;
 	if (cub.PointCollision(crane.getPos()))
 	{
 		if(platform::isKeyPressed(VK_SPACE))
 		{
+			if(pickedUp == false)
+			{
+				glm::vec2 temp = crane.getPos() - glm::vec2{ cub.body->position.x, cub.body->position.y };
+				pickedUp = true;
+			}
 			cub.body->useGravity = false;
 			cub.body->position.x = crane.getPos().x;
 			cub.body->position.y = crane.getPos().y;
-		}else
+		}
+		else
 		{
 			cub.body->useGravity = true;
+			pickedUp = false;
 			//	cub.body->enabled = true;
 		}
+		
 	}
+	
 #pragma endregion
 
 #pragma region map
