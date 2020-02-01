@@ -19,6 +19,7 @@ gl2d::Texture noapteTexture;
 gl2d::Texture stringTexture;
 gl2d::Texture macara;
 gl2d::Texture topTexture;
+gl2d::Texture topTexture2;
 gl2d::Texture blockTexture[2];
 
 Animate playerAnim[2];
@@ -32,7 +33,7 @@ std::vector<RectangleBody> bodies;
 
 //rf_long_audio_stream music;
 
-int gameWith = 800;
+int gameWith = 900;
 int gameHeigth = 700;
 
 float vibrateTime = 0;
@@ -45,6 +46,7 @@ bool initGame(gl2d::Renderer2D& renderer)
 	stringTexture.loadFromFile("string.png");
 	macara.loadFromFile("animal_macara.png");
 	topTexture.loadFromFile("top.png");
+	topTexture2.loadFromFile("top2.png");
 	blockTexture[0].loadFromFile("block.png");
 	blockTexture[1].loadFromFile("test.jpg");
 
@@ -261,6 +263,18 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer,  int w,  int h,  plat
 		}
 	}
 
+	for(int i=0; i<players[0].x / 100; i++)
+	{
+		int padd = (int)players[0].x % 100 - 100;
+		renderer.renderRectangle({ i * 100 + padd, -100, 100, 100 }, {}, 0, topTexture2);
+	}
+
+	for (int i = players[1].x / 100; i < gameWith / 100 ; i++)
+	{
+		int padd = (int)players[1].x % 100 ;
+		renderer.renderRectangle({ i * 100 + padd, -100, 100, 100 }, {}, 0, topTexture2);
+	}
+
 	renderer.renderRectangle({ players[0].x - playerSize / 2, players[0].y - playerSize / 2 , playerSize , playerSize }, Colors_Blue, {}, 0, playerAnim[0].texture, playerAnim[0].getTexturePos());
 	renderer.renderRectangle({ players[1].x - playerSize / 2, players[1].y - playerSize / 2 , playerSize , playerSize }, Colors_Red, {}, 0, playerAnim[1].texture, playerAnim[1].getTexturePos());
 
@@ -422,6 +436,8 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer,  int w,  int h,  plat
 		renderer.renderRectangle({ i * 100, gameHeigth, 100, 100 }, {}, 0, floorTexture);
 	}
 
+	renderer.renderRectangle({ -100, -100, 100, 100 }, {}, 0, topTexture);
+	renderer.renderRectangle({ gameWith, -100, 100, 100 }, {}, 0, topTexture);
 
 
 	//renderer.render9Patch2({ 0, gameHeigth, gameWith, 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
