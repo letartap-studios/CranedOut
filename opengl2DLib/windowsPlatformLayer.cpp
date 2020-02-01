@@ -202,8 +202,16 @@ namespace platform
 
 	void loadXinput()
 	{
-		HMODULE xinputLib = LoadLibrary("xinput1_3.dll");
-		if (xinputLib)
+		HMODULE xinputLib = LoadLibrary("xinput1_4.dll");
+		if (!xinputLib)
+		{
+			xinputLib = LoadLibrary("xinput1_3.dll");
+		}
+		if(!xinputLib)
+		{
+			return ;
+		}
+
 		{
 			DynamicXinputGetState = (XInputGetState_t*)GetProcAddress(xinputLib, "XInputGetState");
 			xInputLoaded = 1;
