@@ -64,6 +64,8 @@ int main()
 		}
 
 		wind.swapBuffers();
+		
+		//FlashWindow(wind.handle, 0);
 	}
 
 	closeGame();
