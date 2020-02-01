@@ -53,7 +53,6 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 
 	float velocity = -0.8 * deltaTime;
 
-	
 	RunPhysicsStep();
 	
 #pragma region determinePlacement
