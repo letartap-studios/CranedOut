@@ -34,7 +34,7 @@ bool initGame(gl2d::Renderer2D &renderer)
 	
 	animTexture.loadFromFile("rotita.png");
 	backgroundTexture[0].loadFromFile("background.png");
-	backgroundTexture[1].loadFromFile("background2.png");
+	backgroundTexture[1].loadFromFile("night_background.png");
 
 	anim.create(4, 1, 50, animTexture);
 
@@ -102,9 +102,12 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 #pragma region background
 
 	{
-		int xSize = backgroundTexture[0].GetSize().x;
-		int ySize = backgroundTexture[0].GetSize().y;
+		int xSize1 = backgroundTexture[0].GetSize().x;
+		int ySize1 = backgroundTexture[0].GetSize().y;
 		
+		int xSize2 = backgroundTexture[1].GetSize().x;
+		int ySize2 = backgroundTexture[1].GetSize().y;
+
 		glm::vec2 pos = renderer.currentCamera.position;
 
 		//pos.x += xSize / 2;
@@ -112,7 +115,16 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 
 		float darkness = ((sin(GetTickCount() / 1000.f) + 1) / 2.f) / 2.f + 0.2f;
 
-		renderer.renderRectangle({ pos.x, pos.y, xSize, ySize }, { darkness,darkness,darkness,1}, {}, 0, backgroundTexture[0]);
+
+		float counterC = 0;
+		counterC += deltaTime * 1000;
+
+		if (counterC > 10000) {
+
+			renderer.renderRectangle({ pos.x, pos.y, xSize2, ySize2 }, { darkness,darkness,darkness,1 }, {}, 0, backgroundTexture[1]);
+		}
+
+		renderer.renderRectangle({ pos.x, pos.y, xSize1, ySize1 }, { darkness,darkness,darkness,1}, {}, 0, backgroundTexture[0]);
 		
 	}
 
