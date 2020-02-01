@@ -26,6 +26,11 @@ struct RectangleBody
 		return { body->position.x, body->position.y - yPadding };
 	}
 	
+	void setPos(glm::vec2 pos)
+	{
+		body->position =  { pos.x, pos.y + yPadding };
+	}
+
 	void Create(const float xPos, const float yPos, const float width, const float height, const float density, int padd = 0)
 	{
 		yPadding = padd;
@@ -35,10 +40,10 @@ struct RectangleBody
 		body = CreatePhysicsBodyRectangle({ xPos,yPos + padd}, width, height, density);
 	}
 
-	void Draw(const gl2d::Texture texture, gl2d::Renderer2D& renderer) const
+	void Draw(const gl2d::Texture texture, gl2d::Renderer2D& renderer, glm::vec4 texCoord = DefaultTextureCoords) const
 	{
 		if(body)
-			renderer.renderRectangle({ body->position.x - width / 2, getPos().y - height / 2, width, height }, { 0,0 }, glm::degrees(-body->orient), texture);
+			renderer.renderRectangle({ body->position.x - width / 2, getPos().y - height / 2, width, height }, { 0,0 }, glm::degrees(-body->orient), texture, texCoord);
 	}
 
 	void Draw( const gl2d::Color4f color, gl2d::Renderer2D& renderer) const
