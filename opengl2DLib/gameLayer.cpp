@@ -19,6 +19,7 @@ gl2d::Texture noapteTexture;
 gl2d::Texture stringTexture;
 gl2d::Texture macara;
 gl2d::Texture topTexture;
+gl2d::Texture blockTexture;
 
 Animate playerAnim[2];
 bool pickedUp = false;
@@ -44,6 +45,7 @@ bool initGame(gl2d::Renderer2D& renderer)
 	stringTexture.loadFromFile("string.png");
 	macara.loadFromFile("animal_macara.png");
 	topTexture.loadFromFile("top.png");
+	blockTexture.loadFromFile("block.png");
 
 	macaraAnim.create(1, 4, 0, macara);
 
@@ -58,11 +60,12 @@ bool initGame(gl2d::Renderer2D& renderer)
 	bodies.push_back({ 50, 300, 50, 50, 0.3 });
 	bodies.push_back({ 50, 400, 50, 50, 0.2 });
 	bodies.push_back({ 50, 500, 50, 50, 0.2 });
+	bodies.push_back({ 250, 500, 100, 50, 0.2 });
 
 	crane.Create(150, 0, 50, 50, 10, 4000);
 	crane.body->freezeOrient = true;
 
-	SetPhysicsGravity(0, 1);
+	SetPhysicsGravity(0, 2);
 
 	animTexture.loadFromFile("rotita.png");
 	backgroundTexture.loadFromFile("zi.png");
@@ -419,7 +422,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 
 	for (auto& cub : bodies)
 	{
-		cub.Draw(Colors_Magenta, renderer);
+		cub.Draw(blockTexture, renderer);
 	}
 
 	//for (int i = -1; i <= gameWith / 100; i++)
