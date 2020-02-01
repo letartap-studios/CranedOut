@@ -38,6 +38,8 @@ struct RectangleBody
 		this->height = height;
 		
 		body = CreatePhysicsBodyRectangle({ xPos,yPos + padd}, width, height, density);
+		body->dynamicFriction *= 2;
+		body->staticFriction *= 2;
 	}
 
 	void Draw(const gl2d::Texture texture, gl2d::Renderer2D& renderer, glm::vec4 texCoord = DefaultTextureCoords) const
