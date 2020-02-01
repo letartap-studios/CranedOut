@@ -10,7 +10,7 @@ gl2d::Font f;
 gl2d::Texture floorTexture;
 gl2d::Texture gearTexture;
 gl2d::Texture animTexture;
-gl2d::Texture backgroundTexture;
+gl2d::Texture backgroundTexture[1];
 Animate anim;
 bool pickedUp = false;
 
@@ -33,7 +33,8 @@ bool initGame(gl2d::Renderer2D &renderer)
 	SetPhysicsGravity(0, 1);
 	
 	animTexture.loadFromFile("rotita.png");
-	backgroundTexture.loadFromFile("background.png");
+	backgroundTexture[0].loadFromFile("background.png");
+	backgroundTexture[1].loadFromFile("background2.png");
 
 	anim.create(4, 1, 50, animTexture);
 
@@ -73,7 +74,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 		float Hzoom = 1;
 		if (gameHeigth < h)
 		{
-			Hzoom = (h) / (gameHeigth * 2.0);
+			Hzoom =(float) (h) / (gameHeigth * 2.0);
 		}
 		else if (gameHeigth > h)
 		{
@@ -102,8 +103,8 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 #pragma region background
 
 	{
-		int xSize = backgroundTexture.GetSize().x;
-		int ySize = backgroundTexture.GetSize().y;
+		int xSize = backgroundTexture[0].GetSize().x;
+		int ySize = backgroundTexture[0].GetSize().y;
 		
 		glm::vec2 pos = renderer.currentCamera.position;
 
@@ -112,7 +113,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D &renderer, int w, int h, platfor
 
 		float darkness = ((sin(GetTickCount() / 1000.f) + 1) / 2.f) / 2.f + 0.2f;
 
-		renderer.renderRectangle({ pos.x, pos.y, xSize, ySize }, { darkness,darkness,darkness,1}, {}, 0, backgroundTexture);
+		renderer.renderRectangle({ pos.x, pos.y, xSize, ySize }, { darkness,darkness,darkness,1}, {}, 0, backgroundTexture[0]);
 		
 	}
 

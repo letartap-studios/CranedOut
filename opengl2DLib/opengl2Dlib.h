@@ -111,8 +111,11 @@ namespace gl2d
 		float             max_height;
 
 		Font() {}
-		explicit Font(const char* file) { createFromFile(file); }
-
+		explicit Font(const char* file) 
+		{
+		createFromFile(file); 
+		}
+		
 		void createFromTTF(const unsigned char* ttf_data, const size_t ttf_data_size);
 		void createFromFile(const char *file);
 	};
