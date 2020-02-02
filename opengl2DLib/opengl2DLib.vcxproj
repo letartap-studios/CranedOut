@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animate.cpp" />
+    <ClCompile Include="FileParse.cpp" />
     <ClCompile Include="gameLayer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="opengl2Dlib.cpp" />
@@ -33,6 +34,7 @@
   <ItemGroup>
     <ClInclude Include="Animate.h" />
     <ClInclude Include="dr_mp3.h" />
+    <ClInclude Include="FileParse.h" />
     <ClInclude Include="gameLayer.h" />
     <ClInclude Include="miniaudio.h" />
     <ClInclude Include="opengl2Dlib.h" />
