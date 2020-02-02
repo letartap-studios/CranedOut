@@ -10,7 +10,12 @@
 
 #include "gameLayer.h"
 
-int main() 
+int WINAPI wWinMain(
+	HINSTANCE   hInstance,
+	HINSTANCE   hPrevInstance,
+	PWSTR       lpCmdLine,
+	int         nCmdShow
+)
 {
 
 #pragma region init

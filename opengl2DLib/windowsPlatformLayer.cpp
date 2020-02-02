@@ -1,5 +1,4 @@
 #include "windowsPlatformLayer.h"
-#include <iostream>
 const char *windClassAtom = "fereastra";
 bool bShouldClose = false;
 //todo create a class
