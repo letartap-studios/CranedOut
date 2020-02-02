@@ -12,6 +12,7 @@ struct RectangleBody
 	PhysicsBody body = 0;
 	float width, height;
 
+
 	float yPadding = 0;
 	
 	RectangleBody() = default;
@@ -19,6 +20,7 @@ struct RectangleBody
 	RectangleBody(const float xPos, const float yPos, const float width, const float height, const float density, const int padd = 0)
 	{
 		Create(xPos, yPos, width, height, density, padd);
+		
 	}
 
 	glm::vec2 getPos() const
@@ -38,10 +40,9 @@ struct RectangleBody
 		this->height = height;
 		
 		body = CreatePhysicsBodyRectangle({ xPos,yPos + padd}, width, height, density);
+		std::cout << body->dynamicFriction << "\t" << body->staticFriction << std::endl;
 		body->dynamicFriction *= 2;
 		body->staticFriction *= 2;
-
-		//body->inertia *= .001 * deltaTime;
 	}
 
 	void Draw(const gl2d::Texture texture, gl2d::Renderer2D& renderer, glm::vec4 texCoord = DefaultTextureCoords) const
