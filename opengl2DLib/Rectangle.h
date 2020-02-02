@@ -23,6 +23,19 @@ struct RectangleBody
 		
 	}
 
+	float getTopH()
+	{
+		float y = body->shape.vertexData.positions[0].y + body->position.y;
+
+		for (auto i = 1; i < body->shape.vertexData.vertexCount; i++)
+		{
+			float temp = body->shape.vertexData.positions[i].y + body->position.y;
+			if (temp < y) { y = temp; }
+		}
+
+		return y;
+	}
+
 	glm::vec2 getPos() const
 	{
 		return { body->position.x, body->position.y - yPadding };
