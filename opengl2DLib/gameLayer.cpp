@@ -75,7 +75,7 @@ bool initGame(gl2d::Renderer2D& renderer)
 	bodies.push_back({ 50, 400, 50, 50, 0.2 });
 	bodies.push_back({ 50, 500, 50, 50, 0.2 });
 	bodies.push_back({ 250, 500, 100, 50, 0.2 });
-	bodies.push_back({450, 500, 100, 100, 0.1});
+	bodies.push_back({ 450, 500, 100, 100, 0.1 });
 
 	crane.Create(150, 0, 50, 50, 4, 4000);
 	crane.body->freezeOrient = true;

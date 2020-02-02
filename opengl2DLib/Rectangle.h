@@ -12,6 +12,7 @@ struct RectangleBody
 	PhysicsBody body = 0;
 	float width, height;
 
+
 	float yPadding = 0;
 	
 	RectangleBody() = default;
@@ -19,6 +20,7 @@ struct RectangleBody
 	RectangleBody(const float xPos, const float yPos, const float width, const float height, const float density, const int padd = 0)
 	{
 		Create(xPos, yPos, width, height, density, padd);
+		
 	}
 
 	glm::vec2 getPos() const

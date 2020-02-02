@@ -45,6 +45,9 @@
     <ClCompile Include="rayfork_audio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FileParse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">
@@ -81,6 +84,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dr_mp3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileParse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
