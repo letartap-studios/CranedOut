@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <vector>
 #include "rayfork_audio.h"
+#include "FileParse.h"
 
 //extern rf_audio_context rfAudioContext;
 
@@ -24,6 +25,7 @@ gl2d::Texture topTexture2;
 gl2d::Texture blockTexture;
 gl2d::Texture zoneTexture;
 gl2d::Texture zoneTexture2;
+gl2d::Texture progressTexture;
 
 Animate playerAnim[2];
 bool pickedUp = false;
@@ -44,6 +46,20 @@ float vibrateTime = 0;
 int constructionStart = 600;
 int constructionEnd = 900;
 
+float progress = gameHeigth - 100;
+float progressMove = gameHeigth - 100;
+float progressSpeed = 30;
+
+glm::vec2 players[2] = { {100, 100}, {400, 100} };
+int playerSize = 40;
+
+const int wireSizeMaxEnarge = 300;
+const int wireSizeMinEnarge = 50;
+
+float wireSize[2] = { 250, 250 };
+int maxWireSize = 600;
+float clampValue = 0.2;
+
 bool initGame(gl2d::Renderer2D& renderer)
 {
 	f.createFromFile("roboto_black.ttf");
@@ -57,6 +73,7 @@ bool initGame(gl2d::Renderer2D& renderer)
 	blockTexture.loadFromFile("block.png");
 	zoneTexture.loadFromFile("zone.png");
 	zoneTexture2.loadFromFile("zone2.png");
+	progressTexture.loadFromFile("progress.png");
 
 	macaraAnim.create(1, 4, 0, macara);
 
@@ -70,12 +87,12 @@ bool initGame(gl2d::Renderer2D& renderer)
 	wallsR.Create(gameWidth + 50, gameHeigth / 2 + 1, 100, gameHeigth, 0.1);
 	wallsR.body->enabled = false;
 	
-	bodies.push_back({ 50, 200, 50, 50, 0.3 });
-	bodies.push_back({ 50, 300, 50, 50, 0.3 });
-	bodies.push_back({ 50, 400, 50, 50, 0.2 });
-	bodies.push_back({ 50, 500, 50, 50, 0.2 });
-	bodies.push_back({ 250, 500, 100, 50, 0.2 });
-	bodies.push_back({ 450, 500, 100, 100, 0.1 });
+	//bodies.push_back({ 50, 200, 50, 50, 0.3 });
+	//bodies.push_back({ 50, 300, 50, 50, 0.3 });
+	//bodies.push_back({ 50, 400, 50, 50, 0.2 });
+	//bodies.push_back({ 50, 500, 50, 50, 0.2 });
+	//bodies.push_back({ 250, 500, 100, 50, 0.2 });
+	//bodies.push_back({ 450, 500, 100, 100, 0.1 });
 
 	crane.Create(150, 0, 50, 50, 4, 4000);
 	crane.body->freezeOrient = true;
@@ -94,18 +111,11 @@ bool initGame(gl2d::Renderer2D& renderer)
 	//music = rf_load_long_audio_stream("music.mp3");
 	//rf_play_long_audio_stream(music);
 
+	levelCreate(bodies, gameWidth, gameHeigth, constructionStart, constructionEnd, "level1.gay");
+
 	return true;
 }
 
-glm::vec2 players[2] = { {100, 100}, {400, 100} };
-int playerSize = 40;
-
-const int wireSizeMaxEnarge = 300;
-const int wireSizeMinEnarge = 50;
-
-float wireSize[2] = { 250, 250 };
-int maxWireSize = 600;
-float clampValue = 0.2;
 
 bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platform::Window& wind)
 {
@@ -233,7 +243,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 			float advance = (float)c / (float)elements;
 			glm::vec2 pos = vecDir * advance + drawPos;
 
-			renderer.renderRectangle({ pos.x , pos.y, 10, 10 }, {}, 0, stringTexture);
+			renderer.renderRectangle({ pos.x , pos.y-30, 10, 10 }, {}, 0, stringTexture);
 		}
 	}
 
@@ -248,7 +258,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 			float advance = (float)c / (float)elements;
 			glm::vec2 pos = vecDir * advance + drawPos;
 
-			renderer.renderRectangle({ pos.x , pos.y, 10, 10 }, {}, 0, stringTexture);
+			renderer.renderRectangle({ pos.x , pos.y-30, 10, 10 }, {}, 0, stringTexture);
 		}
 	}
 #pragma endregion
@@ -287,8 +297,6 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 
 		if (l)playerAnim[0].updateTime(deltaTime * 1000);
 		if (r)playerAnim[1].updateTime(deltaTime * 1000);
-
-		platform::vibrateBoth(12000 * l, 12000 * r);
 
 	}
 
@@ -509,6 +517,53 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 	renderer.renderRectangle({ -100, 0, 100, 100 }, {}, 0, topTexture);
 	renderer.renderRectangle({ gameWidth, -100, 100, 100 }, {}, 0, topTexture);
 
+	float maxH = gameHeigth - 100;
+	for (auto& body : bodies)
+	{
+		if(body.body->useGravity)
+		{
+			float mid = body.getMiddPos();
+			if(mid > constructionStart && mid < constructionEnd)
+			{
+				float h = body.getTopH();
+
+				if (h < maxH)
+				{
+					maxH = h;
+				}
+			}
+		}
+
+	}
+
+	progress = maxH;
+
+	//draw progress
+	if(abs(progress- progressMove)>0.1)
+	{
+
+		if(progress > progressMove)
+		{
+			progressMove += progressSpeed * deltaTime;
+			if (progress < progressMove) 
+			{
+				progress = progressMove;
+			}
+		}else
+		if (progress < progressMove)
+		{
+			progressMove -= progressSpeed * deltaTime;
+			if (progress > progressMove)
+			{
+				progress = progressMove;
+			}
+		}
+	}else
+	{
+		progress = progressMove;
+	}
+
+	renderer.renderRectangle({ gameWidth - 100, progressMove, 200, 100 }, {}, 0, progressTexture);
 
 	//renderer.render9Patch2({ 0, gameHeigth, gameWidth, 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
 	//renderer.render9Patch2({ -100,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
