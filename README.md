@@ -21,7 +21,7 @@ Both players must lock the crane claw at the same time in order to grip the buil
 * Q and E / LEFT AND RIGHT TRIGGER for adjusting the size of the rope
 * SPACE BAR / A button to lock the crane hook
 
-### PLAYER two:
+### PLAYER TWO:
 * IJKL/LEFT ANALOG STICK for movement
 * U and O / LEFT AND RIGHT TRIGGER for adjusting the size of the rope
 * ENTER / A button to lock the crane hook
