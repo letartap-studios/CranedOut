@@ -1,0 +1,10 @@
+gameWidth: 1200
+gameHeight: 700
+constructionStart: 600
+constructionEnd: 900
+addBlock: 50 550 180 50 10
+addBlock: 50 600 200 50 10 
+addBlock: 100 600 150 60 10
+addBlock: 50 700 160 40 10
+addBlock: 100 750 125 70 10
+addBlock: 150 650 120 40 10

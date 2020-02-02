@@ -31,14 +31,12 @@ inline void levelCreate(std::vector<RectangleBody>& bodies,int &gameWidth, int &
 		std::getline(file, line);
 		std::stringstream s;
 		s << line;
-		std::cout << s.str() << "\n";
 		std::string command;
 		s >> command;
 
 		if (command.find("gameWidth:") != std::string::npos)
 		{
 			s >> gameWidth;
-			std::cout << command << "\n";
 		}
 		else if (command.find("gameHeight:") != std::string::npos)
 		{
