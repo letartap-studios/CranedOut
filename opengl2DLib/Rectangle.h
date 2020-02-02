@@ -40,7 +40,7 @@ struct RectangleBody
 		body = CreatePhysicsBodyRectangle({ xPos,yPos + padd}, width, height, density);
 		body->dynamicFriction = 0.6;
 		body->staticFriction = 0.6;
-
+		
 		//body->inertia *= .001 * deltaTime;
 	}
 
