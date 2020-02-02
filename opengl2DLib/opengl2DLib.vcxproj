@@ -42,9 +42,16 @@
     <ClInclude Include="rayfork_audio.h" />
     <ClInclude Include="raymath.h" />
     <ClInclude Include="Rectangle.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="stb_truetype.h" />
     <ClInclude Include="windowsPlatformLayer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ggj2020.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="logo.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

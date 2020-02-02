@@ -26,6 +26,7 @@ gl2d::Texture blockTexture;
 gl2d::Texture zoneTexture;
 gl2d::Texture zoneTexture2;
 gl2d::Texture progressTexture;
+gl2d::Texture goalTexture;
 
 Animate playerAnim[2];
 bool pickedUp = false;
@@ -46,8 +47,8 @@ float vibrateTime = 0;
 int constructionStart = 600;
 int constructionEnd = 900;
 
-float progress = gameHeigth - 100;
-float progressMove = gameHeigth - 100;
+float progress = gameHeigth - 80;
+float progressMove = gameHeigth - 80;
 float progressSpeed = 30;
 
 glm::vec2 players[2] = { {100, 100}, {400, 100} };
@@ -62,18 +63,19 @@ float clampValue = 0.2;
 
 bool initGame(gl2d::Renderer2D& renderer)
 {
-	f.createFromFile("roboto_black.ttf");
-	floorTexture.loadFromFile("stone.png");
-	craneTexture.loadFromFile("crane.png");
-	gearTexture.loadFromFile("gear.png");
-	stringTexture.loadFromFile("string.png");
-	macara.loadFromFile("animal_macara.png");
-	topTexture.loadFromFile("top.png");
-	topTexture2.loadFromFile("top2.png");
-	blockTexture.loadFromFile("block.png");
-	zoneTexture.loadFromFile("zone.png");
-	zoneTexture2.loadFromFile("zone2.png");
-	progressTexture.loadFromFile("progress.png");
+	f.createFromFile("res/roboto_black.ttf");
+	floorTexture.loadFromFile("res/stone.png");
+	craneTexture.loadFromFile("res/crane.png");
+	gearTexture.loadFromFile("res/gear.png");
+	stringTexture.loadFromFile("res/string.png");
+	macara.loadFromFile("res/animal_macara.png");
+	topTexture.loadFromFile("res/top.png");
+	topTexture2.loadFromFile("res/top2.png");
+	blockTexture.loadFromFile("res/block.png");
+	zoneTexture.loadFromFile("res/zone.png");
+	zoneTexture2.loadFromFile("res/zone2.png");
+	progressTexture.loadFromFile("res/progress.png");
+	goalTexture.loadFromFile("res/goal.png");
 
 	macaraAnim.create(1, 4, 0, macara);
 
@@ -81,6 +83,8 @@ bool initGame(gl2d::Renderer2D& renderer)
 
 	podea.Create(0 + gameWidth / 2, gameHeigth + 400 / 2, gameWidth, 400, 0.1);
 	podea.body->enabled = false;
+	podea.body->staticFriction = 0.9;
+	podea.body->dynamicFriction = 0.9;
 
 	wallsL.Create(-50, gameHeigth / 2 + 1, 100, gameHeigth, 0.1);
 	wallsL.body->enabled = false;
@@ -99,9 +103,9 @@ bool initGame(gl2d::Renderer2D& renderer)
 
 	//SetPhysicsGravity(0, 3);
 
-	animTexture.loadFromFile("rotita.png");
-	backgroundTexture.loadFromFile("zi.png");
-	noapteTexture.loadFromFile("noapte.png");
+	animTexture.loadFromFile("res/rotita.png");
+	backgroundTexture.loadFromFile("res/zi.png");
+	noapteTexture.loadFromFile("res/noapte.png");
 
 	playerAnim[0].create(4, 1, 20, animTexture);
 	playerAnim[1].create(4, 1, 20, animTexture);
@@ -111,7 +115,7 @@ bool initGame(gl2d::Renderer2D& renderer)
 	//music = rf_load_long_audio_stream("music.mp3");
 	//rf_play_long_audio_stream(music);
 
-	levelCreate(bodies, gameWidth, gameHeigth, constructionStart, constructionEnd, "level1.gay");
+	levelCreate(bodies, gameWidth, gameHeigth, constructionStart, constructionEnd, "res/level1.gay");
 
 	return true;
 }
@@ -238,7 +242,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 		glm::vec2 vecDir = players[0] - glm::vec2(players[0].x, 50);
 		glm::vec2 drawPos = glm::vec2(players[0].x, 50);
 
-		for (int c = 1; c < elements; c++)
+		for (int c = 1; c <= elements; c++)
 		{
 			float advance = (float)c / (float)elements;
 			glm::vec2 pos = vecDir * advance + drawPos;
@@ -253,7 +257,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 		glm::vec2 vecDir = players[1] - glm::vec2(players[1].x, -50);
 		glm::vec2 drawPos = glm::vec2(players[1].x, -50);
 
-		for (int c = 1; c < elements; c++)
+		for (int c = 1; c <= elements; c++)
 		{
 			float advance = (float)c / (float)elements;
 			glm::vec2 pos = vecDir * advance + drawPos;
@@ -517,7 +521,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 	renderer.renderRectangle({ -100, 0, 100, 100 }, {}, 0, topTexture);
 	renderer.renderRectangle({ gameWidth, -100, 100, 100 }, {}, 0, topTexture);
 
-	float maxH = gameHeigth - 100;
+	float maxH = gameHeigth - 80;
 	for (auto& body : bodies)
 	{
 		if(body.body->useGravity)
@@ -564,6 +568,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 	}
 
 	renderer.renderRectangle({ gameWidth - 100, progressMove, 200, 100 }, {}, 0, progressTexture);
+	renderer.renderRectangle({ gameWidth - 100, 300, 200, 100 }, {}, 0, goalTexture);
 
 	//renderer.render9Patch2({ 0, gameHeigth, gameWidth, 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
 	//renderer.render9Patch2({ -100,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
