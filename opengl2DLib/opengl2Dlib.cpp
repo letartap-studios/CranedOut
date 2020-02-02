@@ -187,24 +187,31 @@ namespace gl2d
 
 	glm::vec2 scaleAroundPoint(glm::vec2 vec, glm::vec2 point, float scale)
 	{
-		//vec.x = vec.x - point.x;
-		//vec.y = vec.y - point.y;
+	
+		vec = (vec - point) * scale + point;
 
-		vec.x = vec.x * scale;
-		vec.y = vec.y * scale;
+		//vec.x = vec.x * scale;
+		//vec.y = vec.y * scale;
+		//
+		//glm::vec2 move = point - (point * scale);
+		//
+		//vec += move;
 
-		if (scale > 1)
-		{
-			scale = scale - 1;
-		}
-		else
-		{
-			scale = scale - 1;
-		}
-
-		vec.x = vec.x + point.x * scale;
-		vec.y = vec.y + point.y * scale;
-
+		//vec.x = vec.x * scale;
+		//vec.y = vec.y * scale;
+		//
+		//if (scale > 1)
+		//{
+		//	scale = scale - 1;
+		//}
+		//else
+		//{
+		//	scale = scale - 1;
+		//}
+		//
+		//vec.x = vec.x + point.x * scale;
+		//vec.y = vec.y + point.y * scale;
+		//
 		return vec;
 	}
 
@@ -354,6 +361,15 @@ namespace gl2d
 
 	void gl2d::Renderer2D::flush()
 	{
+		if(windowH == 0 || windowW == 0)
+		{
+			spritePositionsCount = 0;
+			spriteColorsCount = 0;
+			spriteTexturesCount = 0;
+			texturePositionsCount = 0;
+			return;
+		}
+
 		if (spriteTexturesCount == 0)
 		{
 			return;
@@ -482,9 +498,10 @@ namespace gl2d
 		//Apply camera zoom
 		//if(renderer->currentCamera.zoom != 1)
 		{
+			
 			glm::vec2 cameraCenter;
-			cameraCenter.x = -currentCamera.position.x;
-			cameraCenter.y = currentCamera.position.y;
+			cameraCenter.x = windowW / 2.0f;
+			cameraCenter.y = -windowH / 2.0f;
 
 			v1 = scaleAroundPoint(v1, cameraCenter, currentCamera.zoom);
 			v2 = scaleAroundPoint(v2, cameraCenter, currentCamera.zoom);
@@ -909,8 +926,8 @@ namespace gl2d
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
 
