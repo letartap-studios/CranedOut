@@ -36,6 +36,19 @@ struct RectangleBody
 		return y;
 	}
 
+	float getMiddPos()
+	{
+
+		float avg = 0;
+
+		for (auto i = 0; i < body->shape.vertexData.vertexCount; i++)
+		{
+			avg += body->shape.vertexData.positions[i].x + body->position.x;
+		}
+
+		return avg/4.f;
+	}
+
 	glm::vec2 getPos() const
 	{
 		return { body->position.x, body->position.y - yPadding };

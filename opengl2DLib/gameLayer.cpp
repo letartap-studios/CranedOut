@@ -298,8 +298,6 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 		if (l)playerAnim[0].updateTime(deltaTime * 1000);
 		if (r)playerAnim[1].updateTime(deltaTime * 1000);
 
-		platform::vibrateBoth(12000 * l, 12000 * r);
-
 	}
 
 	players[0] += platform::getPlayerMovement(0) * deltaTime * 200.f;
@@ -524,12 +522,15 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 	{
 		if(body.body->useGravity)
 		{
-			
-			float h = body.getTopH();
-
-			if (h < maxH)
+			float mid = body.getMiddPos();
+			if(mid > constructionStart && mid < constructionEnd)
 			{
-				maxH = h;
+				float h = body.getTopH();
+
+				if (h < maxH)
+				{
+					maxH = h;
+				}
 			}
 		}
 
