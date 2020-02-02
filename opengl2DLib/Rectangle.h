@@ -40,9 +40,10 @@ struct RectangleBody
 		this->height = height;
 		
 		body = CreatePhysicsBodyRectangle({ xPos,yPos + padd}, width, height, density);
-		std::cout << body->dynamicFriction << "\t" << body->staticFriction << std::endl;
-		body->dynamicFriction *= 2;
-		body->staticFriction *= 2;
+		body->dynamicFriction = 0.6;
+		body->staticFriction = 0.6;
+		
+		//body->inertia *= .001 * deltaTime;
 	}
 
 	void Draw(const gl2d::Texture texture, gl2d::Renderer2D& renderer, glm::vec4 texCoord = DefaultTextureCoords) const

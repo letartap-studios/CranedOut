@@ -1,9 +1,10 @@
 #include "windowsPlatformLayer.h"
 #include <iostream>
-
 const char *windClassAtom = "fereastra";
 bool bShouldClose = false;
 //todo create a class
+
+extern "C" void RunPhysicsStep(void);
 
 namespace platform
 {
@@ -39,6 +40,12 @@ namespace platform
 				rez = DefWindowProc(wind, msg, wp, lp);
 				break;
 			}
+			//case WM_SYSCOMMAND:
+			//{
+			//	RunPhysicsStep();
+			//	rez = DefWindowProc(wind, msg, wp, lp);
+			//	break;
+			//}
 			case WM_RBUTTONDOWN:
 				if (windPtr)
 					windPtr->rightClick = 1;
