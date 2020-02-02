@@ -27,4 +27,4 @@ Both players must lock the crane claw at the same time in order to grip the buil
 * ENTER / A button to lock the crane hook
 
 
-![alt text](https://imgur.com/a/AQPIwMy)
+![Gameplay](https://i.imgur.com/mRU2qte.png)
