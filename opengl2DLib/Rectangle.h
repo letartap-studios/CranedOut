@@ -17,7 +17,7 @@ struct RectangleBody
 	
 	RectangleBody() = default;
 
-	RectangleBody(const float xPos, const float yPos, const float width, const float height, const float density, const int padd = 0)
+	RectangleBody(const int xPos, const int yPos, const int width, const int height, const float density, const int padd = 0)
 	{
 		Create(xPos, yPos, width, height, density, padd);
 		
@@ -34,6 +34,19 @@ struct RectangleBody
 		}
 
 		return y;
+	}
+
+	float getMiddPos()
+	{
+
+		float avg = 0;
+
+		for (auto i = 0; i < body->shape.vertexData.vertexCount; i++)
+		{
+			avg += body->shape.vertexData.positions[i].x + body->position.x;
+		}
+
+		return avg/4.f;
 	}
 
 	glm::vec2 getPos() const

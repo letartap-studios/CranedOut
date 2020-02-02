@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <sstream>
 
 inline float getNumber(std::string &str)
 {
@@ -19,11 +20,53 @@ inline float getNumber(std::string &str)
 }
 
 
-inline void level_create(std::vector<RectangleBody>& bodies,int &gameWidth, int &gameHeight, int &constructionStart, int &constructionEnd, std::string filename)
+inline void levelCreate(std::vector<RectangleBody>& bodies,int &gameWidth, int &gameHeight, int &constructionStart, int &constructionEnd, std::string filename)
 {
 	std::ifstream file(filename);
+
+	std::string line;
+
+	while(!file.eof())
+	{
+		std::getline(file, line);
+		std::stringstream s;
+		s << line;
+		std::cout << s.str() << "\n";
+		std::string command;
+		s >> command;
+
+		if (command.find("gameWidth:") != std::string::npos)
+		{
+			s >> gameWidth;
+			std::cout << command << "\n";
+		}
+		else if (command.find("gameHeight:") != std::string::npos)
+		{
+			s >> gameHeight;
+		}
+		else if (command.find("constructionStart:") != std::string::npos)
+		{
+			s >> constructionStart;
+		}
+		else if (command.find("constructionEnd:") != std::string::npos)
+		{	
+			s >> constructionEnd;
+		}
+		else if (command.find("addBlock:") != std::string::npos)
+		{
+			int x, y, w, h;
+			float d;
+			s >> x >> y >> w >> h >> d;
+			bodies.push_back({ x,y,w,h,d });
+		}
+		line.clear();
+	}
+
+
+	/*
 	char c;
 	file >> c;
+	
 	while(!file.eof())
 	{
 		std::string str;
@@ -71,6 +114,8 @@ inline void level_create(std::vector<RectangleBody>& bodies,int &gameWidth, int 
 
 		file >> c;
 	}
+	*/
+
 	file.close();
 
 }
