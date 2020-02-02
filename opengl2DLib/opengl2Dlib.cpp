@@ -41,7 +41,7 @@ namespace gl2d
 
 	void defaultErrorFunc(const char* msg) 
 	{
-		std::cout << msg << "\n";
+		
 	}
 
 	errorFuncType *setErrorFuncCallback(errorFuncType *newFunc)
