@@ -38,8 +38,8 @@ struct RectangleBody
 		this->height = height;
 		
 		body = CreatePhysicsBodyRectangle({ xPos,yPos + padd}, width, height, density);
-		body->dynamicFriction *= 2;
-		body->staticFriction *= 2;
+		body->dynamicFriction = 0.6;
+		body->staticFriction = 0.6;
 
 		//body->inertia *= .001 * deltaTime;
 	}

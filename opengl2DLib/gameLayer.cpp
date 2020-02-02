@@ -478,8 +478,11 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 
 	for (auto& body : bodies)
 	{
-		body.body->velocity.x *= 0.8f;
-		body.body->velocity.y *= 0.8f;
+		body.body->velocity.x *= 0.99f;
+		body.body->velocity.y *= 0.99f;
+	
+		body.body->angularVelocity *= 0.99f;
+
 	}
 
 #pragma region draw map
