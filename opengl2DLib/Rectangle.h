@@ -17,7 +17,7 @@ struct RectangleBody
 	
 	RectangleBody() = default;
 
-	RectangleBody(const float xPos, const float yPos, const float width, const float height, const float density, const int padd = 0)
+	RectangleBody(const int xPos, const int yPos, const int width, const int height, const float density, const int padd = 0)
 	{
 		Create(xPos, yPos, width, height, density, padd);
 		
