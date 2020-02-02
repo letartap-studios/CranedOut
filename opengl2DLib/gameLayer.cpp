@@ -24,6 +24,7 @@ gl2d::Texture topTexture2;
 gl2d::Texture blockTexture;
 gl2d::Texture zoneTexture;
 gl2d::Texture zoneTexture2;
+gl2d::Texture progressTexture;
 
 Animate playerAnim[2];
 bool pickedUp = false;
@@ -44,6 +45,10 @@ float vibrateTime = 0;
 int constructionStart = 600;
 int constructionEnd = 900;
 
+float progress = gameHeigth - 100;
+float progressMove = gameHeigth - 100;
+float progressSpeed = 30;
+
 bool initGame(gl2d::Renderer2D& renderer)
 {
 	f.createFromFile("roboto_black.ttf");
@@ -57,6 +62,7 @@ bool initGame(gl2d::Renderer2D& renderer)
 	blockTexture.loadFromFile("block.png");
 	zoneTexture.loadFromFile("zone.png");
 	zoneTexture2.loadFromFile("zone2.png");
+	progressTexture.loadFromFile("progress.png");
 
 	macaraAnim.create(1, 4, 0, macara);
 
@@ -509,6 +515,51 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 	renderer.renderRectangle({ -100, 0, 100, 100 }, {}, 0, topTexture);
 	renderer.renderRectangle({ gameWidth, -100, 100, 100 }, {}, 0, topTexture);
 
+	float maxH = gameHeigth - 100;
+	for (auto& body : bodies)
+	{
+		if(body.body->useGravity)
+		{
+			
+
+			float h = body.getTopH();
+
+			if (h < maxH)
+			{
+				maxH = h;
+			}
+		}
+
+	}
+
+	progress = maxH;
+
+	//draw progress
+	if(abs(progress- progressMove)>0.1)
+	{
+
+		if(progress > progressMove)
+		{
+			progressMove += progressSpeed * deltaTime;
+			if (progress < progressMove) 
+			{
+				progress = progressMove;
+			}
+		}else
+		if (progress < progressMove)
+		{
+			progressMove -= progressSpeed * deltaTime;
+			if (progress > progressMove)
+			{
+				progress = progressMove;
+			}
+		}
+	}else
+	{
+		progress = progressMove;
+	}
+
+	renderer.renderRectangle({ gameWidth - 100, progressMove, 200, 100 }, {}, 0, progressTexture);
 
 	//renderer.render9Patch2({ 0, gameHeigth, gameWidth, 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
 	//renderer.render9Patch2({ -100,0, 100, gameHeigth + 200 }, 5, Colors_White, { 0,0 }, 0, floorTexture, DefaultTextureCoords, { 0,0.4,0.4,0 });
