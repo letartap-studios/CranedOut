@@ -22,6 +22,8 @@ gl2d::Texture macara;
 gl2d::Texture topTexture;
 gl2d::Texture topTexture2;
 gl2d::Texture blockTexture;
+gl2d::Texture zoneTexture;
+gl2d::Texture zoneTexture2;
 
 Animate playerAnim[2];
 bool pickedUp = false;
@@ -39,6 +41,9 @@ int gameHeigth = 700;
 
 float vibrateTime = 0;
 
+int constructionStart = 600;
+int constructionEnd = 900;
+
 bool initGame(gl2d::Renderer2D& renderer)
 {
 	f.createFromFile("roboto_black.ttf");
@@ -50,6 +55,8 @@ bool initGame(gl2d::Renderer2D& renderer)
 	topTexture.loadFromFile("top.png");
 	topTexture2.loadFromFile("top2.png");
 	blockTexture.loadFromFile("block.png");
+	zoneTexture.loadFromFile("zone.png");
+	zoneTexture2.loadFromFile("zone2.png");
 
 	macaraAnim.create(1, 4, 0, macara);
 
@@ -161,7 +168,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 		int xSize = backgroundTexture.GetSize().x * 1.4;
 		int ySize = backgroundTexture.GetSize().y * 1.4;
 
-		glm::vec2 pos = renderer.currentCamera.position;
+		glm::vec2 pos = renderer.currentCamera.position;// -glm::vec2{ w / 2,h / 2 };
 
 		//pos.x += xSize / 2;
 		//pos.y += ySize / 2;
@@ -320,7 +327,7 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 		players[1].x = gameWidth / 2 - playerSize / 2 - 200;
 	}
 
-	for (int i = 0; i < players[0].x / 100; i++)
+	for (int i = 0; i <= players[0].x / 100; i++)
 	{
 		int padd = (int)players[0].x % 100 - 100;
 		renderer.renderRectangle({ i * 100 + padd, 0, 100, 100 }, {}, 0, topTexture2);
@@ -486,6 +493,14 @@ bool gameLoop(float deltaTime, gl2d::Renderer2D& renderer, int w, int h, platfor
 	for (int i = 0; i < gameWidth / 100; i++)
 	{
 		renderer.renderRectangle({ i * 100, gameHeigth, 100, 100 }, {}, 0, floorTexture);
+	}
+
+	renderer.renderRectangle({ constructionStart, gameHeigth - 200, 100, 200 }, {1,1,1,0.5}, {}, 0, zoneTexture2);
+	renderer.renderRectangle({ constructionEnd , gameHeigth - 200, 100, 200 }, { 1,1,1,0.5 }, {}, 0, zoneTexture2);
+
+	for (int i = constructionStart/100 + 1; i < constructionEnd / 100; i++)
+	{
+		renderer.renderRectangle({ i * 100, gameHeigth-100, 100, 100 }, { 1,1,1,0.5 }, {}, 0, zoneTexture);
 	}
 
 	renderer.renderRectangle({ -100, 0, 100, 100 }, {}, 0, topTexture);
